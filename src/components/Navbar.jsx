@@ -1,22 +1,18 @@
 import { useContext } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import FirebaseContext from '../context/auth/FirebaseContext';
 import LogoIcon from '../assets/images/logo_icon.png';
 import userDefaultImage from '../assets/images/user.png';
 
 function Navbar() {
-  // use context
-  const { user, loggedIn, setLoading, setLoggedIn } = useContext(FirebaseContext);
-  const navigate = useNavigate();
-  const auth = getAuth();
+  const { user, loggedIn, setLoading } = useContext(FirebaseContext);
 
   const onLogout = () => {
     setLoading(true);
+    const auth = getAuth();
     auth.signOut();
-    setLoggedIn(false);
     setLoading(false);
-    navigate('/');
   };
 
   return (

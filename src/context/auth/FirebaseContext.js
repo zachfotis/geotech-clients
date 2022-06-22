@@ -9,8 +9,7 @@ const FirebaseContext = createContext();
 
 export const FirebaseProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [checkingStatus, setCheckingStatus] = useState(true);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
 
   const isMounted = useRef(true);
@@ -18,50 +17,32 @@ export const FirebaseProvider = ({ children }) => {
   // Check if user is logged in
   useEffect(() => {
     if (isMounted) {
+      setLoading(true);
       const auth = getAuth();
       onAuthStateChanged(auth, async (user) => {
         if (user) {
-          setUser((prevState) => ({
-            ...prevState,
+          const q = query(collection(db, 'users'), where('userRef', '==', user.uid));
+          const querySnapshot = await getDocs(q);
+          const userData = querySnapshot.docs[0].data();
+
+          setUser({
+            ...userData,
             uid: user.uid,
-          }));
+          });
+
           setLoggedIn(true);
         } else {
+          setUser(null);
           setLoggedIn(false);
         }
-        setCheckingStatus(false);
-      });
-
-      if (!checkingStatus) {
         setLoading(false);
-      }
+      });
     }
 
     return () => {
       isMounted.current = false;
     };
-  }, [isMounted, checkingStatus]);
-
-  // Set user details on loggedIn change
-  useEffect(() => {
-    const subscribe = async () => {
-      const q = query(collection(db, 'users'), where('userRef', '==', user.uid));
-      const querySnapshot = await getDocs(q);
-      const userData = querySnapshot.docs[0].data();
-
-      setUser((prevState) => ({
-        ...prevState,
-        uid: user.uid,
-        ...userData,
-      }));
-    };
-
-    if (loggedIn) {
-      subscribe();
-    } else {
-      setUser(null);
-    }
-  }, [loggedIn]); // eslint-disable-line
+  }, [isMounted]);
 
   return (
     <FirebaseContext.Provider

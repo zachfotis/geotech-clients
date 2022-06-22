@@ -1,5 +1,5 @@
-import { useState, useContext } from 'react';
-import { Link, useNavigate, Navigate } from 'react-router-dom';
+import { useState, useContext, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import FirebaseContext from '../context/auth/FirebaseContext';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { toast } from 'react-toastify';
@@ -10,7 +10,7 @@ function Login() {
     email: '',
     password: '',
   });
-  const { loggedIn, setLoading } = useContext(FirebaseContext);
+  const { user, setLoading } = useContext(FirebaseContext);
   const navigate = useNavigate();
 
   const onSubmit = async (e) => {
@@ -25,7 +25,6 @@ function Login() {
       );
       if (userCredentials.user) {
         toast.success('Login successful');
-        navigate('/projects');
       }
     } catch (error) {
       toast.error('Invalid email or password');
@@ -33,9 +32,11 @@ function Login() {
     setLoading(false);
   };
 
-  if (loggedIn) {
-    return <Navigate to="/projects" />;
-  }
+  useEffect(() => {
+    if (user) {
+      navigate('/projects');
+    }
+  }, [user]); // eslint-disable-line
 
   return (
     <section className="bg-stone-50 px-4 py-6 w-full flex-auto flex flex-col flex-wrap justify-center items-center">

@@ -6,7 +6,7 @@ import { db } from '../firebase.config';
 import { toast } from 'react-toastify';
 
 function Projects() {
-  const { user, loggedIn } = useContext(FirebaseContext);
+  const { user, loggedIn, setLoading } = useContext(FirebaseContext);
   const [projects, setProjects] = useState([]);
 
   useEffect(() => {
@@ -22,21 +22,22 @@ function Projects() {
     };
 
     if (loggedIn && user) {
+      console.log('fetching projects');
+      setLoading(true);
       getProjects();
-      console.log('fetching');
+      setLoading(false);
     }
 
-    return () => {
-      setProjects([]);
-    };
-  }, []);
+    return () => {};
+  }, [loggedIn]); // eslint-disable-line
 
-  if (!loggedIn) {
+  if (!loggedIn || !user) {
     return <Navigate to="/login" />;
   }
+
   return (
     <section className="projects-section">
-      <h1>{`Welcome ${user.firstName}`}</h1>
+      <h1>{`Welcome ${user.firstname}`}</h1>
       <form>
         <input
           type="text"
