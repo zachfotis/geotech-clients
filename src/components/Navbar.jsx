@@ -7,29 +7,30 @@ import userDefaultImage from '../assets/images/user.png';
 
 function Navbar() {
   // use context
-  const { user, loggedIn, setLoading } = useContext(FirebaseContext);
+  const { user, loggedIn, setLoading, setLoggedIn } = useContext(FirebaseContext);
   const navigate = useNavigate();
   const auth = getAuth();
 
   const onLogout = () => {
     setLoading(true);
     auth.signOut();
+    setLoggedIn(false);
     setLoading(false);
     navigate('/');
   };
 
   return (
     <nav>
-      <div className="logo">
+      <Link to="/" className="logo">
         <img src={LogoIcon} alt="logo" />
         <h1>Geotech Clients</h1>
         <div className="badge badge-accent badge-outline">BETA</div>
-      </div>
+      </Link>
 
       <ul className="top-menu">
         {loggedIn && user ? (
           <li>
-            <h1 className="mr-3">{`${user?.firstName} ${user?.lastName}`}</h1>
+            <h1 className="mr-3">{`${user?.firstname} ${user?.lastname}`}</h1>
           </li>
         ) : (
           ''

@@ -152,6 +152,13 @@ nav .top-menu {
   text-align: center;
 }
 
+.projects-section .projects-container :last-child p:nth-of-type(1) {
+  border-bottom-left-radius: 0.75rem;
+}
+.projects-section .projects-container :last-child .actions {
+  border-bottom-right-radius: 0.75rem;
+}
+
 .projects-section .projects-container .grid-headers h1 {
   color: #fff;
   background-color: var(--geotech-color-light);

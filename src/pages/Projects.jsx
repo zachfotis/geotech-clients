@@ -1,17 +1,42 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import { getDocs, collection, query, where } from 'firebase/firestore';
 import FirebaseContext from '../context/auth/FirebaseContext';
+import { db } from '../firebase.config';
+import { toast } from 'react-toastify';
 
 function Projects() {
   const { user, loggedIn } = useContext(FirebaseContext);
+  const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    const getProjects = async () => {
+      try {
+        const q = query(collection(db, 'projects'), where('userRef', '==', user.uid));
+        const querySnapshot = await getDocs(q);
+        const projects = querySnapshot.docs.map((doc) => doc.data());
+        setProjects(projects);
+      } catch {
+        toast.error('Error fetching projects');
+      }
+    };
+
+    if (loggedIn && user) {
+      getProjects();
+      console.log('fetching');
+    }
+
+    return () => {
+      setProjects([]);
+    };
+  }, []);
 
   if (!loggedIn) {
     return <Navigate to="/login" />;
   }
-
   return (
     <section className="projects-section">
-      <h1>{`Welcome to your projects ${user.firstName}`}</h1>
+      <h1>{`Welcome ${user.firstName}`}</h1>
       <form>
         <input
           type="text"
@@ -28,16 +53,18 @@ function Projects() {
           <h1>Date</h1>
           <h1 className="rounded-tr-xl">Actions</h1>
         </div>
-
-        <div className="grid-content contents">
-          <p>Test ID</p>
-          <p>Test Project</p>
-          <p>Test Company</p>
-          <p>Test Date</p>
-          <div className="actions">
-            <button className="btn btn-outline btn-info btn-sm w-fit">Open</button>
-          </div>
-        </div>
+        {projects.length > 0 &&
+          projects.map((project) => (
+            <div className="grid-content contents" key={project.id}>
+              <p>{project.id}</p>
+              <p>{project.title}</p>
+              <p>{project.company}</p>
+              <p>{new Date(Number(project.timestamp)).toUTCString()}</p>
+              <div className="actions">
+                <button className="btn btn-outline btn-info btn-sm w-fit">Open</button>
+              </div>
+            </div>
+          ))}
       </div>
     </section>
   );
