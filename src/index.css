@@ -1,0 +1,181 @@
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/* Tailwind */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Variables */
+:root {
+  --heading-color: #57666f;
+  --heading-color-light: #a0a8ad;
+  --geotech-color-light: rgb(55, 205, 190);
+}
+
+/* Reset CSS */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Mulish', sans-serif;
+}
+
+/* Spinner */
+.loadingSpinnerContainer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 5000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loadingSpinner {
+  width: 64px;
+  height: 64px;
+  border: 8px solid;
+  border-color: #00cc66 transparent #00cc66 transparent;
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Main Page */
+main {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Navbar */
+nav {
+  width: 100%;
+  padding: 10px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+nav .logo {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+nav .logo img {
+  height: 40px;
+}
+
+nav .logo h1 {
+  margin: 0px 10px;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+nav .logo .badge {
+  margin-top: 4px;
+}
+
+nav .top-menu {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Login Section */
+
+.login-section {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Projects Section */
+
+.projects-section {
+  width: 70%;
+  flex: auto;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.projects-section > h1 {
+  font-size: 32px;
+  font-weight: 400;
+  margin-top: 50px;
+  text-transform: uppercase;
+  color: var(--heading-color);
+}
+
+.projects-section form {
+  width: 100%;
+  margin-top: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.projects-section form button {
+  margin-left: 15px;
+}
+
+.projects-section .projects-container {
+  width: 100%;
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: repeat(5, auto);
+  text-align: center;
+}
+
+.projects-section .projects-container .grid-headers h1 {
+  color: #fff;
+  background-color: var(--geotech-color-light);
+  padding: 10px;
+  font-weight: 500;
+  border-bottom: 1px solid var(--heading-color-light);
+}
+
+.projects-section .projects-container .grid-content > * {
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid var(--heading-color-light);
+  border-left: 1px solid var(--heading-color-light);
+}
+
+.projects-section .projects-container .grid-content :last-child {
+  border-right: 1px solid var(--heading-color-light);
+}
+
+.projects-section .projects-container .grid-content .actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
