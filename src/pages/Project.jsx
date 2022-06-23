@@ -4,10 +4,9 @@ import { getDoc, doc } from 'firebase/firestore';
 import FirebaseContext from '../context/auth/FirebaseContext';
 import { db } from '../firebase.config';
 import { toast } from 'react-toastify';
-import { Wrapper, Status } from '@googlemaps/react-wrapper';
 
 function Project() {
-  const { user, loggedIn, setLoading } = useContext(FirebaseContext);
+  const { user, loggedIn } = useContext(FirebaseContext);
   const { state } = useLocation();
   const [project, setProject] = useState(state);
 
@@ -17,7 +16,7 @@ function Project() {
       const currentDate = new Date();
       const projectDate = new Date(project.createdAt.seconds * 1000);
       const daysAgo = currentDate.getDate() - projectDate.getDate();
-      const isNew = daysAgo <= 7;
+      const isNew = daysAgo <= 3;
       try {
         // Get Company info
         const docRef = doc(db, 'companies', project.companyRef);
@@ -30,11 +29,9 @@ function Project() {
     };
 
     if (loggedIn && user) {
-      setLoading(true);
       getCompany();
-      setLoading(false);
     }
-  }, []);
+  }, []); // eslint-disable-line
 
   if (!loggedIn || !user) {
     return <Navigate to="/login" />;

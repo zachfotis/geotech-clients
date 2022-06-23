@@ -3,7 +3,7 @@ import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { getDocs, collection, query, where } from 'firebase/firestore';
 import { db } from '../../firebase.config';
 
-import Spinner from '../../components/Spinner';
+import Spinner from '../../components/layout/Spinner';
 
 const FirebaseContext = createContext();
 

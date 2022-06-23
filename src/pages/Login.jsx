@@ -24,7 +24,6 @@ function Login() {
         credentials.password
       );
       if (userCredentials.user) {
-        toast.success('Login successful');
       }
     } catch (error) {
       toast.error('Invalid email or password');
@@ -34,7 +33,13 @@ function Login() {
 
   useEffect(() => {
     if (user) {
-      navigate('/projects');
+      if (user?.accountType === 'admin') {
+        navigate('/dashboard/project');
+        toast.info('Admin privileges granted!');
+      } else {
+        navigate('/projects');
+      }
+      toast.success('Login successful');
     }
   }, [user]); // eslint-disable-line
 

@@ -23,7 +23,7 @@
   font-family: 'Mulish', sans-serif;
 }
 
-/* Spinner */
+/* ----------------------------- SPINNER ----------------------------- */
 .loadingSpinnerContainer {
   position: fixed;
   top: 0;
@@ -54,7 +54,8 @@
   }
 }
 
-/* Main Page */
+/* ----------------------------- MAIN ----------------------------- */
+
 main {
   width: 100%;
   min-height: 100vh;
@@ -64,7 +65,7 @@ main {
   justify-content: flex-start;
 }
 
-/* Navbar */
+/* ----------------------------- NAVBAR ----------------------------- */
 nav {
   width: 100%;
   padding: 10px 30px;
@@ -114,7 +115,7 @@ nav .top-menu {
   justify-content: center;
 }
 
-/* Projects Section */
+/* ----------------------------- PROJECTS ----------------------------- */
 
 .projects-section {
   width: 70%;
@@ -190,7 +191,7 @@ nav .top-menu {
   gap: 10px;
 }
 
-/* Project Section */
+/* ----------------------------- SINGLE PROJECT ----------------------------- */
 
 .project-section {
   width: 70%;
@@ -318,4 +319,25 @@ nav .top-menu {
   justify-content: center;
   gap: 10px;
   font-size: 16px;
+}
+
+/* ----------------------------- DASHBOARD ----------------------------- */
+
+.dashboard-section {
+  width: 100%;
+  padding: 30px;
+}
+
+.dashboard-section > h1 {
+  width: fit-content;
+  margin: auto;
+  margin-bottom: 20px;
+  padding: 0px 20px;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.dashboard-section .tab-content {
+  width: 100%;
+  padding: 20px;
 }

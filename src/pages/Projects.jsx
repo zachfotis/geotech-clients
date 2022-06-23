@@ -6,7 +6,7 @@ import { db } from '../firebase.config';
 import { toast } from 'react-toastify';
 
 function Projects() {
-  const { user, loggedIn, setLoading } = useContext(FirebaseContext);
+  const { user, loggedIn } = useContext(FirebaseContext);
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [search, setSearch] = useState('');
@@ -29,9 +29,7 @@ function Projects() {
     };
 
     if (loggedIn && user) {
-      setLoading(true);
       getProjects();
-      setLoading(false);
     }
 
     return () => {};
