@@ -9,7 +9,6 @@ import Profile from './pages/Profile';
 import Project from './pages/Project';
 import Projects from './pages/Projects';
 import Dashboard from './pages/Dashboard';
-import { Children } from 'react';
 
 function App() {
   return (

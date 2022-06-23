@@ -21,14 +21,14 @@ function Dashboard() {
     <section className="dashboard-section">
       <h1>Administration Dashboard</h1>
       <div className="tabs ml-2">
-        <NavLink to="/dashboard/project" className={activeLink}>
-          Project
-        </NavLink>
         <NavLink to="/dashboard/user" className={activeLink}>
           User
         </NavLink>
         <NavLink to="/dashboard/company" className={activeLink}>
           Company
+        </NavLink>
+        <NavLink to="/dashboard/project" className={activeLink}>
+          Project
         </NavLink>
         <NavLink to="/dashboard/file" className={activeLink}>
           Upload File
