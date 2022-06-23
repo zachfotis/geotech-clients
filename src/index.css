@@ -210,18 +210,21 @@ nav .top-menu {
   color: var(--heading-color);
 }
 
-.project-section .project-info-container,
-.project-section .project-files-container {
-  margin-top: 30px;
+.project-section .project-info-container {
+  margin-top: 20px;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 40px;
 }
 
 .project-section .project-info-container > h1,
 .project-section .project-files-container > h1 {
   font-size: 24px;
   font-weight: 500;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: 30px;
 }
 
 .project-section .project-info h2 {
@@ -243,7 +246,6 @@ nav .top-menu {
   gap: 70px;
   flex-wrap: wrap;
   align-items: flex-start;
-  margin-top: 30px;
   background-color: var(--geotech-color-trans);
   border-radius: 0.75rem;
   padding: 30px;
@@ -257,13 +259,22 @@ nav .top-menu {
   grid-gap: 20px;
 }
 
+.project-section .project-files-container {
+  margin-top: 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 40px;
+}
+
 .project-section .project-files-container .category-container {
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  margin-top: 30px;
   background-color: var(--heading-color-trans);
   border-radius: 0.75rem;
   gap: 25px;

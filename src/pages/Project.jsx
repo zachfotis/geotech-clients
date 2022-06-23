@@ -68,7 +68,7 @@ function Project() {
         </div>
       </div>
       <div className="project-files-container">
-        <h1>Documents</h1>
+        <h1>Documents for Services</h1>
         <div className="category-container shadow-md">
           <h2>Purchase Orders (PO)</h2>
           <div className="category-files-container">
@@ -78,7 +78,7 @@ function Project() {
             />
             <div className="file-download">
               <h2>Technical study for the well GA-01</h2>
-              <button className="btn btn-outline btn-sm btn-success">Download</button>
+              <button className="btn btn-outline btn-xs btn-success">Download</button>
             </div>
           </div>
           <div className="category-files-container">
@@ -88,7 +88,7 @@ function Project() {
             />
             <div className="file-download">
               <h2>Technical study for the well GA-01</h2>
-              <button className="btn btn-outline btn-sm btn-success">Download</button>
+              <button className="btn btn-outline btn-xs btn-success">Download</button>
             </div>
           </div>
         </div>
@@ -101,7 +101,7 @@ function Project() {
             />
             <div className="file-download">
               <h2>The private agreement between companies for the current project</h2>
-              <button className="btn btn-outline btn-sm btn-success">Download</button>
+              <button className="btn btn-outline btn-xs btn-success">Download</button>
             </div>
           </div>
           <div className="category-files-container">
@@ -111,7 +111,7 @@ function Project() {
             />
             <div className="file-download">
               <h2>Technical study for the well GA-01</h2>
-              <button className="btn btn-outline btn-sm btn-success">Download</button>
+              <button className="btn btn-outline btn-xs btn-success">Download</button>
             </div>
           </div>
         </div>
