@@ -13,12 +13,17 @@ function Project() {
 
   useEffect(() => {
     const getCompany = async () => {
+      //  Create Project Date and check if it new
+      const currentDate = new Date();
+      const projectDate = new Date(project.createdAt.seconds * 1000);
+      const daysAgo = currentDate.getDate() - projectDate.getDate();
+      const isNew = daysAgo <= 7;
       try {
-        const date = new Date(project.createdAt.seconds * 1000).toLocaleString();
+        // Get Company info
         const docRef = doc(db, 'companies', project.companyRef);
         const docSnap = await getDoc(docRef);
         const company = docSnap.data();
-        setProject({ ...project, company, date });
+        setProject({ ...project, company, date: projectDate.toLocaleString(), isNew });
       } catch (error) {
         toast.error('Error fetching company');
       }
@@ -37,10 +42,12 @@ function Project() {
 
   return (
     <section className="project-section">
-      <h1>{project.title}</h1>
+      <h1>
+        {project.title}{' '}
+        {project.isNew && <span className="badge badge-accent badge-md text-white">New</span>}
+      </h1>
       <div className="project-info-container ">
-        <h1>Details</h1>
-        <div className="project-info shadow-lg">
+        <div className="project-info shadow-lg outline outline-1 outline-emerald-600">
           <div className="left-container">
             <h2>Reference:</h2>
             <span>{project.id}</span>
