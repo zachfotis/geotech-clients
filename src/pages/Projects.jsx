@@ -29,7 +29,6 @@ function Projects() {
     };
 
     if (loggedIn && user) {
-      console.log('fetching projects');
       setLoading(true);
       getProjects();
       setLoading(false);
@@ -88,9 +87,15 @@ function Projects() {
                 <p>{project.id}</p>
                 <p>{project.title}</p>
                 <p>{project.company}</p>
-                <p>{new Date(Number(project.timestamp)).toUTCString()}</p>
+                <p>{new Date(project.createdAt.seconds * 1000).toLocaleDateString()}</p>
                 <div className="actions">
-                  <button className="btn btn-outline btn-info btn-sm w-fit">Open</button>
+                  <Link
+                    to={`/project/${project.id}`}
+                    state={project}
+                    className="btn btn-outline btn-accent btn-sm w-28"
+                  >
+                    View
+                  </Link>
                 </div>
               </div>
             ))
@@ -100,13 +105,14 @@ function Projects() {
                 <p>{project.id}</p>
                 <p>{project.title}</p>
                 <p>{project.company}</p>
-                <p>{new Date(Number(project.timestamp)).toUTCString()}</p>
+                <p>{new Date(project.createdAt.seconds * 1000).toLocaleDateString()}</p>
                 <div className="actions">
                   <Link
                     to={`/project/${project.id}`}
-                    className="btn btn-outline btn-info btn-sm w-fit"
+                    state={project}
+                    className="btn btn-outline btn-accent btn-sm w-28"
                   >
-                    Open
+                    View
                   </Link>
                 </div>
               </div>
