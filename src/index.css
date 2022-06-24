@@ -333,11 +333,80 @@ nav .top-menu {
   margin: auto;
   margin-bottom: 20px;
   padding: 0px 20px;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 400;
 }
 
 .dashboard-section .tab-content {
   width: 100%;
   padding: 20px;
+}
+
+/* ----------------------------- DASHBOARD CREATE USER----------------------------- */
+
+.dashboard-section .tab-content .create-user {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+}
+
+.dashboard-section .tab-content .create-user form {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 20px;
+}
+
+.dashboard-section .tab-content .create-user form .left-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+}
+
+.dashboard-section .tab-content .create-user form .left-container #user-image-upload {
+  display: none;
+}
+
+.dashboard-section .tab-content .create-user form .left-container img {
+  height: 80px;
+}
+
+.dashboard-section .tab-content .create-user form .right-container {
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.dashboard-section .tab-content .create-user form .right-container > input {
+  width: 100%;
+}
+
+.dashboard-section .tab-content .create-user form .right-container .fullname {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.dashboard-section .tab-content .create-user form .right-container .fullname > input {
+  flex: auto;
+}
+
+.dashboard-section .tab-content .create-user form .right-container .is-admin {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
 }

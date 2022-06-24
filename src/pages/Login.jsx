@@ -33,13 +33,10 @@ function Login() {
 
   useEffect(() => {
     if (user) {
-      if (user?.accountType === 'admin') {
-        navigate('/dashboard/project');
-        toast.info('Admin privileges granted!');
-      } else {
-        navigate('/projects');
-      }
-      toast.success('Login successful');
+      user?.accountType === 'admin'
+        ? toast.warning('Admin privileges granted!')
+        : toast.success('Login successful!');
+      navigate('/projects');
     }
   }, [user]); // eslint-disable-line
 
