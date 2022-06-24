@@ -348,21 +348,24 @@ nav .top-menu {
   width: 100%;
   display: flex;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
   gap: 20px;
   padding: 20px;
 }
 
-.dashboard-section .tab-content .create-user form {
-  width: 100%;
+.create-user-form {
+  width: fit-content;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
+  flex-wrap: wrap;
   gap: 40px;
-  padding: 20px;
+  padding: 20px 0;
 }
 
-.dashboard-section .tab-content .create-user form .left-container {
+/* ------ LEFT CONTAINER ------ */
+.create-user-form .left-container {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -370,15 +373,16 @@ nav .top-menu {
   gap: 20px;
 }
 
-.dashboard-section .tab-content .create-user form .left-container #user-image-upload {
+.create-user-form .left-container #user-image-upload {
   display: none;
 }
 
-.dashboard-section .tab-content .create-user form .left-container img {
+.create-user-form .left-container img {
   height: 80px;
 }
 
-.dashboard-section .tab-content .create-user form .right-container {
+/* ------ RIGHT CONTAINER ------ */
+.create-user-form .right-container {
   width: 500px;
   display: flex;
   flex-direction: column;
@@ -387,11 +391,11 @@ nav .top-menu {
   gap: 20px;
 }
 
-.dashboard-section .tab-content .create-user form .right-container > input {
+.create-user-form .right-container > input {
   width: 100%;
 }
 
-.dashboard-section .tab-content .create-user form .right-container .fullname {
+.create-user-form .right-container .fullname {
   width: 100%;
   display: flex;
   justify-content: flex-start;
@@ -399,14 +403,78 @@ nav .top-menu {
   gap: 20px;
 }
 
-.dashboard-section .tab-content .create-user form .right-container .fullname > input {
+.create-user-form .right-container .fullname > input {
   flex: auto;
 }
 
-.dashboard-section .tab-content .create-user form .right-container .is-admin {
+.create-user-form .right-container .is-admin {
   width: 100%;
   display: flex;
   justify-content: flex-start;
   align-items: center;
   gap: 10px;
+}
+
+/* ------ EDIT CONTAINER ------ */
+
+.edit-user-form {
+  flex: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 20px;
+}
+
+/* SEARCH BAR */
+.edit-user-form .search-bar-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+}
+
+.edit-user-form .search-bar-container input[type='text'] {
+  width: 100%;
+}
+/* RESULTS */
+.edit-user-form .user-results-container {
+  flex: 1;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, auto);
+}
+
+.edit-user-form .user-results-container .grid-headers > h1 {
+  border: 1px solid var(--heading-color-light);
+  padding: 10px 0px;
+}
+
+.edit-user-form .user-results-container .grid-content > * {
+  padding: 20px 0px;
+  border: 1px solid var(--heading-color-trans);
+}
+
+.edit-user-form .user-results-container .grid-content > h1 {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.edit-user-form .user-results-container .grid-content .buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.edit-user-form .user-results-container .grid-content .buttons button {
+  width: 100px;
 }

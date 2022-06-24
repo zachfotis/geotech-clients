@@ -34,7 +34,7 @@ function Login() {
   useEffect(() => {
     if (user) {
       user?.accountType === 'admin'
-        ? toast.warning('Admin privileges granted!')
+        ? toast.info('Admin privileges granted!')
         : toast.success('Login successful!');
       navigate('/projects');
     }

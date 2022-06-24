@@ -64,7 +64,7 @@ function Navbar() {
                 <>
                   {loggedIn && user?.accountType === 'admin' ? (
                     <li>
-                      <Link to="/dashboard/project">
+                      <Link to="/dashboard/user">
                         Dashboard <span className="badge badge-secondary badge-sm">admin</span>{' '}
                       </Link>
                     </li>

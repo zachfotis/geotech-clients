@@ -1,6 +1,14 @@
 import { useState, useContext } from 'react';
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { setDoc, doc, serverTimestamp } from 'firebase/firestore';
+import {
+  setDoc,
+  doc,
+  getDocs,
+  query,
+  collection,
+  where,
+  serverTimestamp,
+} from 'firebase/firestore';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import FirebaseContext, { FirebaseProvider } from '../../context/auth/FirebaseContext';
 import { db, secondaryApp } from '../../firebase.config';
@@ -9,6 +17,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Avatar from 'react-avatar';
 
 function CreateUser() {
+  const { user, loggedIn, setLoading } = useContext(FirebaseContext);
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
@@ -17,10 +26,14 @@ function CreateUser() {
     accountType: 'user',
     profileImage: '',
   });
+  const [isEditing, setIsEditing] = useState(false);
+  const [searchFormData, setSearchFormData] = useState({
+    query: '',
+    fetchedUsers: [],
+    isLoading: false,
+  });
 
-  const { user, loggedIn, setLoading } = useContext(FirebaseContext);
-
-  const onSubmit = async (e) => {
+  const onCreate = async (e) => {
     setLoading(true);
     e.preventDefault();
 
@@ -114,10 +127,42 @@ function CreateUser() {
     }
   };
 
+  const onSearch = async (e) => {
+    e.preventDefault();
+
+    setSearchFormData({ ...searchFormData, isLoading: true });
+
+    try {
+      // TODO: FirebaseError: Missing or insufficient permissions.
+      const q = query(collection(db, 'users'), where('firstname', '==', searchFormData.query));
+      const querySnapshot = await getDocs(q);
+      const Users = querySnapshot.docs.map((doc) => doc.data());
+      setSearchFormData({
+        ...searchFormData,
+        fetchedUsers: Users,
+        isLoading: false,
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error('Error fetching Users');
+    }
+  };
+
+  const onReset = () => {
+    setSearchFormData({
+      query: '',
+      fetchedUsers: [],
+      isLoading: false,
+    });
+  };
+
   return (
     <div className="create-user">
-      <form onSubmit={onSubmit}>
+      <form className="create-user-form" onSubmit={onCreate}>
         <div className="left-container">
+          {formData.accountType === 'admin' && (
+            <div className="badge badge-secondary badge-outline badge-lg">Admin</div>
+          )}
           {formData.profileImage === '' ? (
             <Avatar
               color={stringToColour(`${formData.firstname} ${formData.lastname}`)}
@@ -171,7 +216,10 @@ function CreateUser() {
                 setFormData({
                   ...formData,
                   lastname: e.target.value,
-                  password: (e.target.value + new Date().getFullYear()).toLowerCase(),
+                  password:
+                    e.target.value !== ''
+                      ? (e.target.value + new Date().getFullYear()).toLowerCase()
+                      : '',
                 })
               }
             />
@@ -213,6 +261,54 @@ function CreateUser() {
           </div>
 
           <input type="submit" value="Create User" className="btn btn-ghost btn-outline mt-5" />
+        </div>
+      </form>
+      {/* EDIT FORM */}
+      <form className="edit-user-form" onSubmit={onSearch} onReset={onReset}>
+        <div className="search-bar-container">
+          <input
+            type="text"
+            placeholder="Search only for editing a user"
+            className="input input-bordered"
+            value={searchFormData.query}
+            onChange={(e) =>
+              setSearchFormData({
+                ...searchFormData,
+                query: e.target.value,
+              })
+            }
+          />
+          <input type="submit" value="Search" className="btn btn-accent btn-outline" />
+          <input type="reset" value="Reset" className="btn btn-error btn-outline" />
+        </div>
+        <div className="user-results-container">
+          <div className="grid-headers contents text-sm uppercase font-semibold text-center">
+            <h1 className="rounded-tl-xl">Avatar</h1>
+            <h1>Name</h1>
+            <h1>Email</h1>
+            <h1>Type</h1>
+            <h1 className="rounded-tr-xl">Actions</h1>
+          </div>
+          <div className="grid-content contents">
+            <h1>Image</h1>
+            <h1>Full Name</h1>
+            <h1>Email</h1>
+            <h1>Account Type</h1>
+            <div className="buttons">
+              {!isEditing ? (
+                <button type="button" className="btn btn-xs btn-accent btn-outline">
+                  Edit
+                </button>
+              ) : (
+                <button type="button" className="btn btn-xs btn-warning btn-outline">
+                  Cancel
+                </button>
+              )}
+              <button type="button" className="btn btn-xs btn-error btn-outline">
+                Delete
+              </button>
+            </div>
+          </div>
         </div>
       </form>
     </div>
