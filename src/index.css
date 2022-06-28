@@ -439,6 +439,7 @@ nav .top-menu {
 .edit-user-form .search-bar-container input[type='text'] {
   width: 100%;
 }
+
 /* RESULTS */
 .edit-user-form .user-results-container {
   flex: 1;
@@ -453,7 +454,7 @@ nav .top-menu {
 }
 
 .edit-user-form .user-results-container .grid-content > * {
-  padding: 20px 0px;
+  padding: 10px 0px;
   border: 1px solid var(--heading-color-trans);
 }
 
