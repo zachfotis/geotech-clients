@@ -127,63 +127,61 @@ function CreateUser() {
         toast.error('Error updating user');
       }
       setLoading(false);
-      return;
-    }
+    } else {
+      // ON CREATING
+      setLoading(true);
+      try {
+        // Store image in firebase and get url
+        let imgUrl = '';
+        if (formData.profileImage !== '') {
+          imgUrl = await storeImage(formData.profileImage);
+        }
 
-    // ON CREATING
-    setLoading(true);
-    try {
-      // Store image in firebase and get url
-      let imgUrl = '';
-      if (formData.profileImage !== '') {
-        imgUrl = await storeImage(formData.profileImage);
+        // Create user in firebase
+        const auth = getAuth(secondaryApp);
+
+        const userCredentials = await createUserWithEmailAndPassword(
+          auth,
+          formData.email,
+          formData.password
+        );
+
+        updateProfile(auth.currentUser, {
+          displayName: formData.firstname + ' ' + formData.lastname,
+        });
+
+        const newUser = userCredentials.user;
+
+        sendPasswordResetEmail(auth, newUser.email);
+
+        const userDataCopy = {
+          ...formData,
+          profileImage: imgUrl,
+          userRef: newUser.uid,
+          timestamp: serverTimestamp(),
+        };
+        delete userDataCopy.password;
+
+        await setDoc(doc(db, 'users', newUser.uid), userDataCopy);
+        toast.success('Account created successfully');
+        auth.signOut();
+
+        // clear state
+        setFormData({
+          firstname: '',
+          lastname: '',
+          email: '',
+          password: '',
+          accountType: 'user',
+          profileImage: '',
+        });
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+        toast.error('Could not create user!');
+        setLoading(false);
       }
-
-      // Create user in firebase
-      const auth = getAuth(secondaryApp);
-
-      const userCredentials = await createUserWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password
-      );
-
-      updateProfile(auth.currentUser, {
-        displayName: formData.firstname + ' ' + formData.lastname,
-      });
-
-      const newUser = userCredentials.user;
-
-      sendPasswordResetEmail(auth, newUser.email);
-
-      const userDataCopy = {
-        ...formData,
-        profileImage: imgUrl,
-        userRef: newUser.uid,
-        timestamp: serverTimestamp(),
-      };
-      delete userDataCopy.password;
-
-      await setDoc(doc(db, 'users', newUser.uid), userDataCopy);
-      toast.success('Account created successfully');
-      auth.signOut();
-
-      // clear state
-      setFormData({
-        firstname: '',
-        lastname: '',
-        email: '',
-        password: '',
-        accountType: 'user',
-        profileImage: '',
-      });
-      setLoading(false);
-    } catch (error) {
-      console.log(error);
-      toast.error('Could not create user!');
-      setLoading(false);
     }
-
     onSearch();
   };
 
