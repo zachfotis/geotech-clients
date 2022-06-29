@@ -1,34 +1,15 @@
 import { useState, useContext } from 'react';
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  updateProfile,
-  sendPasswordResetEmail,
-} from 'firebase/auth';
-import {
-  setDoc,
-  doc,
-  getDocs,
-  collection,
-  serverTimestamp,
-  updateDoc,
-  deleteDoc,
-} from 'firebase/firestore';
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-  deleteObject,
-} from 'firebase/storage';
-import FirebaseContext, { FirebaseProvider } from '../../context/auth/FirebaseContext';
+import { getAuth, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from 'firebase/auth';
+import { setDoc, doc, getDocs, collection, serverTimestamp, updateDoc, deleteDoc } from 'firebase/firestore';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
+import FirebaseContext from '../../context/auth/FirebaseContext';
 import { db, secondaryApp } from '../../firebase.config';
 import { toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
 import Avatar from 'react-avatar';
 
 function CreateUser() {
-  const { user, loggedIn, setLoading } = useContext(FirebaseContext);
+  const { setLoading } = useContext(FirebaseContext);
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
@@ -39,152 +20,151 @@ function CreateUser() {
   });
   const [isEditing, setIsEditing] = useState(false);
   const [editingUser, setEditingUser] = useState({});
-
   const [searchFormData, setSearchFormData] = useState({
     query: '',
     fetchedUsers: [],
     matchingUsers: [],
   });
 
-  const onCreateOrUpdate = async (e) => {
-    e.preventDefault();
+  // Store Image to Firebase Storage -- PROMISE
+  const storeImage = async (image) => {
+    return new Promise((resolve, reject) => {
+      const storage = getStorage();
+      const fileName = `${uuidv4()}-${image.name}`;
+      const storageRef = ref(storage, 'avatars/' + fileName);
+      const uploadTask = uploadBytesResumable(storageRef, image);
+      const toastId = toast.loading(`Uploading ${image.name}...`);
 
-    // Store Image to Firebase Storage -- PROMISE
-    const storeImage = async (image) => {
-      return new Promise((resolve, reject) => {
-        const storage = getStorage();
-        const fileName = `${uuidv4()}-${image.name}`;
-        const storageRef = ref(storage, 'avatars/' + fileName);
-        const uploadTask = uploadBytesResumable(storageRef, image);
-        const toastId = toast.loading(`Uploading ${image.name}...`);
-
-        uploadTask.on(
-          'state_changed',
-          (snapshot) => {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            if (progress < 100) {
-              toast.update(toastId, {
-                progress: parseInt(Math.ceil(progress).toFixed(0)) / 100,
-                type: 'info',
-              });
-            }
-          },
-
-          (error) => {
-            toast.update(toastId, { render: 'Upload failed!', type: 'error', isLoading: false });
-            reject(error);
-          },
-
-          () => {
-            getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-              toast.update(toastId, {
-                render: 'Uploaded successfully!',
-                type: 'success',
-                isLoading: false,
-              });
-              toast.dismiss(toastId);
-              resolve(downloadURL);
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          if (progress < 100) {
+            toast.update(toastId, {
+              progress: parseInt(Math.ceil(progress).toFixed(0)) / 100,
+              type: 'info',
             });
           }
-        );
+        },
+
+        (error) => {
+          toast.update(toastId, { render: 'Upload failed!', type: 'error', isLoading: false });
+          reject(error);
+        },
+
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            toast.update(toastId, {
+              render: 'Uploaded successfully!',
+              type: 'success',
+              isLoading: false,
+            });
+            toast.dismiss(toastId);
+            resolve(downloadURL);
+          });
+        }
+      );
+    });
+  };
+
+  // Create new User
+  const onCreate = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      // Store image in firebase and get url
+      let imgUrl = '';
+      if (formData.profileImage !== '') {
+        imgUrl = await storeImage(formData.profileImage);
+      }
+
+      // Create user in firebase
+      const auth = getAuth(secondaryApp);
+
+      const userCredentials = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+
+      updateProfile(auth.currentUser, {
+        displayName: formData.firstname + ' ' + formData.lastname,
       });
-    };
 
-    // EDITING
-    if (isEditing) {
-      setLoading(true);
-      const userRef = doc(db, 'users', editingUser.userRef);
-      const userData = {
-        firstname: editingUser.firstname,
-        lastname: editingUser.lastname,
-        accountType: editingUser.accountType,
-        profileImage: editingUser.profileImage,
+      const newUser = userCredentials.user;
+
+      // sendPasswordResetEmail(auth, newUser.email);
+
+      const userDataCopy = {
+        ...formData,
+        profileImage: imgUrl,
+        userRef: newUser.uid,
+        timestamp: serverTimestamp(),
       };
-      try {
-        // Update Image in Firebase Storage
-        if (typeof editingUser.profileImage !== 'string') {
-          const imgUrl = await storeImage(editingUser.profileImage);
-          userData.profileImage = imgUrl;
+      delete userDataCopy.password;
 
-          // Delete Old Image
-          if (editingUser.oldProfileImage !== '') {
-            const storage = getStorage();
-            const avatarRef = ref(storage, editingUser.oldProfileImage);
-            await deleteObject(avatarRef);
-          }
-        }
+      await setDoc(doc(db, 'users', newUser.uid), userDataCopy);
+      toast.success('Account created successfully');
+      auth.signOut();
 
-        // Update User in Firestore
-        await updateDoc(userRef, userData);
-
-        // Update User email in Firebase Auth
-
-        setIsEditing(false);
-        setEditingUser({});
-        toast.success('User updated successfully');
-      } catch (error) {
-        console.log(error);
-        toast.error('Error updating user');
-      }
+      // clear state
+      setFormData({
+        firstname: '',
+        lastname: '',
+        email: '',
+        password: '',
+        accountType: 'user',
+        profileImage: '',
+      });
       setLoading(false);
-    } else {
-      // ON CREATING
-      setLoading(true);
-      try {
-        // Store image in firebase and get url
-        let imgUrl = '';
-        if (formData.profileImage !== '') {
-          imgUrl = await storeImage(formData.profileImage);
-        }
-
-        // Create user in firebase
-        const auth = getAuth(secondaryApp);
-
-        const userCredentials = await createUserWithEmailAndPassword(
-          auth,
-          formData.email,
-          formData.password
-        );
-
-        updateProfile(auth.currentUser, {
-          displayName: formData.firstname + ' ' + formData.lastname,
-        });
-
-        const newUser = userCredentials.user;
-
-        sendPasswordResetEmail(auth, newUser.email);
-
-        const userDataCopy = {
-          ...formData,
-          profileImage: imgUrl,
-          userRef: newUser.uid,
-          timestamp: serverTimestamp(),
-        };
-        delete userDataCopy.password;
-
-        await setDoc(doc(db, 'users', newUser.uid), userDataCopy);
-        toast.success('Account created successfully');
-        auth.signOut();
-
-        // clear state
-        setFormData({
-          firstname: '',
-          lastname: '',
-          email: '',
-          password: '',
-          accountType: 'user',
-          profileImage: '',
-        });
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
-        toast.error('Could not create user!');
-        setLoading(false);
-      }
+    } catch (error) {
+      console.log(error);
+      toast.error('Could not create user!');
+      setLoading(false);
     }
+
     onSearch();
   };
 
+  // Edit and Update User
+  const onUpdate = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    const userRef = doc(db, 'users', editingUser.userRef);
+    const userData = {
+      firstname: editingUser.firstname,
+      lastname: editingUser.lastname,
+      accountType: editingUser.accountType,
+      profileImage: editingUser.profileImage,
+    };
+    try {
+      // Update Image in Firebase Storage
+      if (typeof editingUser.profileImage !== 'string') {
+        const imgUrl = await storeImage(editingUser.profileImage);
+        userData.profileImage = imgUrl;
+
+        // Delete Old Image
+        if (editingUser.oldProfileImage !== '') {
+          const storage = getStorage();
+          const avatarRef = ref(storage, editingUser.oldProfileImage);
+          await deleteObject(avatarRef);
+        }
+      }
+
+      // Update User in Firestore
+      await updateDoc(userRef, userData);
+
+      // Update User email in Firebase Auth
+
+      setIsEditing(false);
+      setEditingUser({});
+      toast.success('User updated successfully');
+    } catch (error) {
+      console.log(error);
+      toast.error('Error updating user');
+    }
+    setLoading(false);
+    onSearch();
+  };
+
+  // Search for User
   const onSearch = async (e) => {
     e && e.preventDefault();
 
@@ -212,7 +192,8 @@ function CreateUser() {
     }
   };
 
-  const onReset = () => {
+  // Reset Search form
+  const onResetSearch = () => {
     setSearchFormData({
       query: '',
       fetchedUsers: [],
@@ -223,6 +204,7 @@ function CreateUser() {
     setEditingUser({});
   };
 
+  // Reset Create form
   const onResetForm = (e) => {
     e.preventDefault();
 
@@ -236,6 +218,7 @@ function CreateUser() {
     });
   };
 
+  // Edit button in search resulted user
   const onEdit = (user) => {
     setIsEditing(true);
     setEditingUser({
@@ -244,12 +227,14 @@ function CreateUser() {
     });
   };
 
+  // Cancel button in search resulted user
   const onCancelEdit = () => {
     setIsEditing(false);
     setEditingUser({});
   };
 
   // TODO: DELETE AFTER DEVELOPMENT
+  // Delete button in search resulted user
   const onDelete = async (user) => {
     setLoading(true);
 
@@ -279,10 +264,14 @@ function CreateUser() {
 
   return (
     <div className="create-user">
-      <form className="create-user-form" onSubmit={onCreateOrUpdate} onReset={onResetForm}>
+      {/* CREATE FORM */}
+      <form
+        className="create-user-form"
+        onSubmit={(e) => (isEditing ? onUpdate(e) : onCreate(e))}
+        onReset={onResetForm}
+      >
         <div className="left-container">
-          {(!isEditing && formData.accountType === 'admin') ||
-          (isEditing && editingUser.accountType === 'admin') ? (
+          {(!isEditing && formData.accountType === 'admin') || (isEditing && editingUser.accountType === 'admin') ? (
             <div className="badge badge-secondary badge-outline badge-lg">Admin</div>
           ) : (
             ''
@@ -291,10 +280,7 @@ function CreateUser() {
             editingUser.profileImage === '' ? (
               <Avatar
                 color={stringToColour(`${editingUser.firstname} ${editingUser.lastname}`)}
-                fgColor={invertColor(
-                  stringToColour(`${editingUser.firstname} ${editingUser.lastname}`),
-                  true
-                )}
+                fgColor={invertColor(stringToColour(`${editingUser.firstname} ${editingUser.lastname}`), true)}
                 name={`${editingUser.firstname} ${editingUser.lastname}`}
                 size="80"
                 textSizeRatio={2.5}
@@ -317,10 +303,7 @@ function CreateUser() {
           ) : formData.profileImage === '' ? (
             <Avatar
               color={stringToColour(`${formData.firstname} ${formData.lastname}`)}
-              fgColor={invertColor(
-                stringToColour(`${formData.firstname} ${formData.lastname}`),
-                true
-              )}
+              fgColor={invertColor(stringToColour(`${formData.firstname} ${formData.lastname}`), true)}
               name={`${formData.firstname} ${formData.lastname}`}
               size="80"
               textSizeRatio={2.5}
@@ -339,10 +322,7 @@ function CreateUser() {
             />
           )}
 
-          <label
-            htmlFor="user-image-upload"
-            className="custom-user-image-upload btn btn-outline btn-sm btn-accent"
-          >
+          <label htmlFor="user-image-upload" className="custom-user-image-upload btn btn-outline btn-sm btn-accent">
             Upload Image
           </label>
 
@@ -353,8 +333,7 @@ function CreateUser() {
               accept="image/*"
               files={[formData.profileImage]}
               onChange={(e) => {
-                e.target.files.length > 0 &&
-                  setEditingUser({ ...editingUser, profileImage: e.target.files[0] });
+                e.target.files.length > 0 && setEditingUser({ ...editingUser, profileImage: e.target.files[0] });
               }}
             />
           ) : (
@@ -364,8 +343,7 @@ function CreateUser() {
               accept="image/*"
               files={[formData.profileImage]}
               onChange={(e) =>
-                e.target.files.length > 0 &&
-                setFormData({ ...formData, profileImage: e.target.files[0] })
+                e.target.files.length > 0 && setFormData({ ...formData, profileImage: e.target.files[0] })
               }
             />
           )}
@@ -416,10 +394,7 @@ function CreateUser() {
                     setFormData({
                       ...formData,
                       lastname: e.target.value,
-                      password:
-                        e.target.value !== ''
-                          ? (e.target.value + new Date().getFullYear()).toLowerCase()
-                          : '',
+                      password: e.target.value !== '' ? (e.target.value + new Date().getFullYear()).toLowerCase() : '',
                     })
                   }
                 />
@@ -507,18 +482,14 @@ function CreateUser() {
           <input
             type="submit"
             value={isEditing ? 'Update User' : 'Create User'}
-            className={
-              isEditing ? 'btn btn-warning btn-outline mt-5' : 'btn btn-success btn-outline mt-5'
-            }
+            className={isEditing ? 'btn btn-warning btn-outline mt-5' : 'btn btn-success btn-outline mt-5'}
           />
-          {!isEditing && (
-            <input type="reset" value="Clear Form" className="btn btn-error btn-outline" />
-          )}
+          {!isEditing && <input type="reset" value="Clear Form" className="btn btn-error btn-outline" />}
         </div>
       </form>
 
       {/* EDIT FORM */}
-      <form className="edit-user-form" onSubmit={onSearch} onReset={onReset}>
+      <form className="edit-user-form" onSubmit={onSearch} onReset={onResetSearch}>
         <div className="search-bar-container">
           <input
             type="text"
@@ -551,10 +522,7 @@ function CreateUser() {
                   {user.profileImage === '' ? (
                     <Avatar
                       color={stringToColour(`${user.firstname} ${user.lastname}`)}
-                      fgColor={invertColor(
-                        stringToColour(`${user.firstname} ${user.lastname}`),
-                        true
-                      )}
+                      fgColor={invertColor(stringToColour(`${user.firstname} ${user.lastname}`), true)}
                       name={`${user.firstname} ${user.lastname}`}
                       size="56"
                       textSizeRatio={2.5}
@@ -572,11 +540,7 @@ function CreateUser() {
                 <h1>{user.accountType}</h1>
                 <div className="buttons">
                   {isEditing && editingUser?.userRef === user.userRef ? (
-                    <button
-                      type="button"
-                      className="btn btn-xs btn-warning btn-outline"
-                      onClick={onCancelEdit}
-                    >
+                    <button type="button" className="btn btn-xs btn-warning btn-outline" onClick={onCancelEdit}>
                       Cancel
                     </button>
                   ) : (
