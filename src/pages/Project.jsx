@@ -40,11 +40,10 @@ function Project() {
   return (
     <section className="project-section">
       <h1>
-        {project.title}{' '}
-        {project.isNew && <span className="badge badge-accent badge-md text-white">New</span>}
+        {project.title} {project.isNew && <span className="badge badge-accent badge-md text-white">New</span>}
       </h1>
       <div className="project-info-container ">
-        <div className="project-info shadow-lg outline outline-1 outline-emerald-600">
+        <div className="project-info shadow-lg outline outline-1 outline-teal-400 bg-teal-50">
           <div className="left-container">
             <h2>Reference:</h2>
             <span>{project.id}</span>
@@ -76,10 +75,7 @@ function Project() {
         <div className="category-container shadow-md">
           <h2>Purchase Orders (PO)</h2>
           <div className="category-files-container">
-            <img
-              src="https://www.freeiconspng.com/thumbs/pdf-icon-png/pdf-icon-4.png"
-              alt="file type"
-            />
+            <img src="https://www.freeiconspng.com/thumbs/pdf-icon-png/pdf-icon-4.png" alt="file type" />
             <div className="file-download">
               <h2>Technical study for the well GA-01</h2>
               <button className="btn btn-outline btn-xs btn-success">Download</button>
@@ -99,10 +95,7 @@ function Project() {
         <div className="category-container shadow-md">
           <h2>Private Agreement</h2>
           <div className="category-files-container">
-            <img
-              src="https://www.freeiconspng.com/thumbs/pdf-icon-png/pdf-icon-4.png"
-              alt="file type"
-            />
+            <img src="https://www.freeiconspng.com/thumbs/pdf-icon-png/pdf-icon-4.png" alt="file type" />
             <div className="file-download">
               <h2>The private agreement between companies for the current project</h2>
               <button className="btn btn-outline btn-xs btn-success">Download</button>

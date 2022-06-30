@@ -12,7 +12,7 @@
   --heading-color-light: #a0a8ad;
   --heading-color-trans: rgba(160, 168, 173, 0.06);
   --geotech-color-light: rgb(55, 205, 190);
-  --geotech-color-trans: rgba(27, 216, 197, 0.1);
+  --geotech-color-trans: rgba(27, 216, 197, 0.05);
 }
 
 /* Reset CSS */
@@ -52,6 +52,23 @@
   100% {
     transform: rotate(360deg);
   }
+}
+
+.loadingSpinnerContainerSmall {
+  position: absolute;
+  right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loadingSpinnerSmall {
+  width: 24px;
+  height: 24px;
+  border: 3px solid;
+  border-color: #00cc66 transparent #00cc66 transparent;
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
 }
 
 /* ----------------------------- MAIN ----------------------------- */
@@ -251,7 +268,6 @@ nav .top-menu {
   gap: 70px;
   flex-wrap: wrap;
   align-items: flex-start;
-  background-color: var(--geotech-color-trans);
   border-radius: 0.75rem;
   padding: 30px;
 }
@@ -307,11 +323,7 @@ nav .top-menu {
   cursor: pointer;
 }
 
-.project-section
-  .project-files-container
-  .category-container
-  .category-files-container
-  .file-download {
+.project-section .project-files-container .category-container .category-files-container .file-download {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -478,4 +490,79 @@ nav .top-menu {
 
 .edit-user-form .user-results-container .grid-content .buttons button {
   width: 100px;
+}
+
+/* ----------------------------- DASHBOARD CREATE COMPANY----------------------------- */
+
+.dashboard-section .tab-content .create-company {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+}
+
+.create-company-form {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.create-company-form .checkbox-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 20px;
+}
+
+.create-company-form > input {
+  width: 500px;
+}
+
+.create-company-form .vat-container {
+  width: 100%;
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.create-company-form .vat-container > input {
+  width: 100%;
+}
+
+.create-company-form .full-name-container,
+.create-company-form .address-container,
+.create-company-form .address-container-2 {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.create-company-form .full-name-container > input {
+  flex: auto;
+}
+
+.create-company-form .address-container > input:first-child,
+.create-company-form .address-container-2 > input:first-child {
+  flex: 3;
+}
+
+.create-company-form .address-container > input:last-child,
+.create-company-form .address-container-2 > input:last-child {
+  flex: 1;
 }
