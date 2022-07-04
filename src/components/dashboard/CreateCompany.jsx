@@ -9,8 +9,6 @@ function CreateCompany() {
     vat: '',
     country: '',
     companyName: '',
-    firstname: '',
-    lastname: '',
     businessType: '',
     telephone: '',
     addressName: '',
@@ -47,10 +45,6 @@ function CreateCompany() {
           {isFetching && <SpinnerSmall />}
         </div>
         <input type="text" required={true} placeholder="Company Name" className="input input-bordered input-ghost" />
-        <div className="full-name-container">
-          <input type="text" required={true} placeholder="First Name" className="input input-bordered input-ghost" />
-          <input type="text" required={true} placeholder="Last Name" className="input input-bordered input-ghost" />
-        </div>
         <input
           type="text"
           required={true}
