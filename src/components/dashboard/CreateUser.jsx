@@ -18,6 +18,7 @@ function CreateUser() {
     accountType: 'user',
     profileImage: '',
   });
+  const [editMode, setEditMode] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editingUser, setEditingUser] = useState({});
   const [searchFormData, setSearchFormData] = useState({
@@ -270,305 +271,332 @@ function CreateUser() {
         onSubmit={(e) => (isEditing ? onUpdate(e) : onCreate(e))}
         onReset={onResetForm}
       >
-        <div className="left-container">
-          {(!isEditing && formData.accountType === 'admin') || (isEditing && editingUser.accountType === 'admin') ? (
-            <div className="badge badge-secondary badge-outline badge-lg">Admin</div>
-          ) : (
-            ''
-          )}
-          {isEditing ? (
-            editingUser.profileImage === '' ? (
-              <Avatar
-                color={stringToColour(`${editingUser.firstname} ${editingUser.lastname}`)}
-                fgColor={invertColor(stringToColour(`${editingUser.firstname} ${editingUser.lastname}`), true)}
-                name={`${editingUser.firstname} ${editingUser.lastname}`}
-                size="80"
-                textSizeRatio={2.5}
-                round="true"
-                className="rounded-xl"
-              />
-            ) : (
-              <>
+        <div className="create-user-container">
+          <h1 className="text-xl font-bold">{!editMode ? 'Create New' : 'Modify Existing'} User</h1>
+          <div className="checkbox-container">
+            <label htmlFor="editCheckbox" className="label-text">
+              Edit Mode
+            </label>
+            <input
+              type="checkbox"
+              className="toggle"
+              id="editCheckbox"
+              onChange={(e) => {
+                setEditMode(e.target.checked);
+                if (!e.target.checked) {
+                  setIsEditing(false);
+                  setEditingUser({});
+                }
+              }}
+            />
+          </div>
+          <div className="create-user-form-container">
+            <div className="avatar-container">
+              {(!isEditing && formData.accountType === 'admin') ||
+              (isEditing && editingUser.accountType === 'admin') ? (
+                <div className="badge badge-secondary badge-outline badge-lg">Admin</div>
+              ) : (
+                ''
+              )}
+              {isEditing ? (
+                editingUser.profileImage === '' ? (
+                  <Avatar
+                    color={stringToColour(`${editingUser.firstname} ${editingUser.lastname}`)}
+                    fgColor={invertColor(stringToColour(`${editingUser.firstname} ${editingUser.lastname}`), true)}
+                    name={`${editingUser.firstname} ${editingUser.lastname}`}
+                    size="80"
+                    textSizeRatio={2.5}
+                    round="true"
+                    className="rounded-xl"
+                  />
+                ) : (
+                  <>
+                    <img
+                      src={
+                        typeof editingUser.profileImage === 'string'
+                          ? editingUser.profileImage
+                          : URL.createObjectURL(editingUser.profileImage)
+                      }
+                      alt="avatar"
+                      className="rounded-xl"
+                    />
+                  </>
+                )
+              ) : formData.profileImage === '' ? (
+                <Avatar
+                  color={stringToColour(`${formData.firstname} ${formData.lastname}`)}
+                  fgColor={invertColor(stringToColour(`${formData.firstname} ${formData.lastname}`), true)}
+                  name={`${formData.firstname} ${formData.lastname}`}
+                  size="80"
+                  textSizeRatio={2.5}
+                  round="true"
+                  className="rounded-xl"
+                />
+              ) : (
                 <img
                   src={
-                    typeof editingUser.profileImage === 'string'
-                      ? editingUser.profileImage
-                      : URL.createObjectURL(editingUser.profileImage)
+                    typeof formData.profileImage === 'string'
+                      ? formData.profileImage
+                      : URL.createObjectURL(formData.profileImage)
                   }
                   alt="avatar"
                   className="rounded-xl"
                 />
-              </>
-            )
-          ) : formData.profileImage === '' ? (
-            <Avatar
-              color={stringToColour(`${formData.firstname} ${formData.lastname}`)}
-              fgColor={invertColor(stringToColour(`${formData.firstname} ${formData.lastname}`), true)}
-              name={`${formData.firstname} ${formData.lastname}`}
-              size="80"
-              textSizeRatio={2.5}
-              round="true"
-              className="rounded-xl"
-            />
-          ) : (
-            <img
-              src={
-                typeof formData.profileImage === 'string'
-                  ? formData.profileImage
-                  : URL.createObjectURL(formData.profileImage)
-              }
-              alt="avatar"
-              className="rounded-xl"
-            />
-          )}
+              )}
 
-          <label htmlFor="user-image-upload" className="custom-user-image-upload btn btn-outline btn-sm btn-accent">
-            Upload Image
-          </label>
+              <label htmlFor="user-image-upload" className="custom-user-image-upload btn btn-outline btn-sm btn-accent">
+                Upload Image
+              </label>
 
-          {isEditing ? (
-            <input
-              id="user-image-upload"
-              type="file"
-              accept="image/*"
-              files={[formData.profileImage]}
-              onChange={(e) => {
-                e.target.files.length > 0 && setEditingUser({ ...editingUser, profileImage: e.target.files[0] });
-              }}
-            />
-          ) : (
-            <input
-              id="user-image-upload"
-              type="file"
-              accept="image/*"
-              files={[formData.profileImage]}
-              onChange={(e) =>
-                e.target.files.length > 0 && setFormData({ ...formData, profileImage: e.target.files[0] })
-              }
-            />
-          )}
-        </div>
-        <div className="right-container">
-          <div className="fullname">
-            {isEditing ? (
-              <>
+              {isEditing ? (
                 <input
-                  type="text"
-                  required={true}
-                  placeholder="First Name"
-                  className="input input-bordered input-warning"
-                  value={editingUser.firstname}
-                  onChange={(e) => setEditingUser({ ...editingUser, firstname: e.target.value })}
+                  id="user-image-upload"
+                  type="file"
+                  accept="image/*"
+                  files={[formData.profileImage]}
+                  onChange={(e) => {
+                    e.target.files.length > 0 && setEditingUser({ ...editingUser, profileImage: e.target.files[0] });
+                  }}
                 />
+              ) : (
                 <input
-                  required={true}
-                  type="text"
-                  placeholder="Last Name"
-                  className="input input-bordered input-warning"
-                  value={editingUser.lastname}
-                  onChange={(e) => setEditingUser({ ...editingUser, lastname: e.target.value })}
-                />
-              </>
-            ) : (
-              <>
-                <input
-                  type="text"
-                  required={true}
-                  placeholder="First Name"
-                  className="input input-bordered"
-                  value={formData.firstname}
+                  id="user-image-upload"
+                  type="file"
+                  accept="image/*"
+                  files={[formData.profileImage]}
                   onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      firstname: e.target.value,
-                    })
+                    e.target.files.length > 0 && setFormData({ ...formData, profileImage: e.target.files[0] })
                   }
                 />
-                <input
-                  type="text"
-                  required={true}
-                  placeholder="Last Name"
-                  className="input input-bordered"
-                  value={formData.lastname}
-                  onChange={(e) =>
-                    setFormData({
-                      ...formData,
-                      lastname: e.target.value,
-                      password: e.target.value !== '' ? (e.target.value + new Date().getFullYear()).toLowerCase() : '',
-                    })
-                  }
-                />
-              </>
-            )}
-          </div>
-          {isEditing ? (
-            <>
-              <input
-                required={true}
-                autoComplete="off"
-                type="email"
-                placeholder="Email"
-                className="input input-bordered input-warning"
-                disabled={true}
-                value={editingUser.email}
-                onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
-              />
-              <input
-                required={true}
-                type="text"
-                placeholder="Password"
-                className="input input-bordered input-warning"
-                disabled={true}
-                value={editingUser?.password ? editingUser.password : ''}
-                onChange={(e) => editingUser({ ...editingUser, password: e.target.value })}
-              />
-            </>
-          ) : (
-            <>
-              <input
-                required={true}
-                autoComplete="off"
-                type="email"
-                placeholder="Email"
-                className="input input-bordered "
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              />
-              <input
-                required={true}
-                type="text"
-                placeholder="Password"
-                className="input input-bordered"
-                disabled={true}
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-              />
-            </>
-          )}
-          <div className="is-admin">
-            {isEditing ? (
-              <input
-                type="checkbox"
-                className="checkbox checkbox-sm checkbox-accent"
-                id="accountType"
-                checked={editingUser.accountType === 'admin'}
-                onChange={(e) =>
-                  setEditingUser({
-                    ...editingUser,
-                    accountType: e.target.checked ? 'admin' : 'user',
-                  })
-                }
-              />
-            ) : (
-              <input
-                type="checkbox"
-                className="checkbox checkbox-sm checkbox-accent"
-                id="accountType"
-                checked={formData.accountType === 'admin'}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    accountType: e.currentTarget.checked ? 'admin' : 'user',
-                  })
-                }
-              />
-            )}
+              )}
+            </div>
+            <div className="form-container">
+              <div className="fullname">
+                {isEditing ? (
+                  <>
+                    <input
+                      type="text"
+                      required={true}
+                      placeholder="First Name"
+                      className="input input-bordered input-warning"
+                      value={editingUser.firstname}
+                      onChange={(e) => setEditingUser({ ...editingUser, firstname: e.target.value })}
+                    />
+                    <input
+                      required={true}
+                      type="text"
+                      placeholder="Last Name"
+                      className="input input-bordered input-warning"
+                      value={editingUser.lastname}
+                      onChange={(e) => setEditingUser({ ...editingUser, lastname: e.target.value })}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <input
+                      type="text"
+                      required={true}
+                      placeholder="First Name"
+                      className="input input-bordered"
+                      value={formData.firstname}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          firstname: e.target.value,
+                        })
+                      }
+                    />
+                    <input
+                      type="text"
+                      required={true}
+                      placeholder="Last Name"
+                      className="input input-bordered"
+                      value={formData.lastname}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          lastname: e.target.value,
+                          password:
+                            e.target.value !== '' ? (e.target.value + new Date().getFullYear()).toLowerCase() : '',
+                        })
+                      }
+                    />
+                  </>
+                )}
+              </div>
+              {isEditing ? (
+                <>
+                  <input
+                    required={true}
+                    autoComplete="off"
+                    type="email"
+                    placeholder="Email"
+                    className="input input-bordered input-warning"
+                    disabled={true}
+                    value={editingUser.email}
+                    onChange={(e) => setEditingUser({ ...editingUser, email: e.target.value })}
+                  />
+                  <input
+                    required={true}
+                    type="text"
+                    placeholder="Password"
+                    className="input input-bordered input-warning"
+                    disabled={true}
+                    value={editingUser?.password ? editingUser.password : ''}
+                    onChange={(e) => editingUser({ ...editingUser, password: e.target.value })}
+                  />
+                </>
+              ) : (
+                <>
+                  <input
+                    required={true}
+                    autoComplete="off"
+                    type="email"
+                    placeholder="Email"
+                    className="input input-bordered "
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  />
+                  <input
+                    required={true}
+                    type="text"
+                    placeholder="Password"
+                    className="input input-bordered"
+                    disabled={true}
+                    value={formData.password}
+                    onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  />
+                </>
+              )}
+              <div className="is-admin">
+                {isEditing ? (
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-sm checkbox-accent"
+                    id="accountType"
+                    checked={editingUser.accountType === 'admin'}
+                    onChange={(e) =>
+                      setEditingUser({
+                        ...editingUser,
+                        accountType: e.target.checked ? 'admin' : 'user',
+                      })
+                    }
+                  />
+                ) : (
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-sm checkbox-accent"
+                    id="accountType"
+                    checked={formData.accountType === 'admin'}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        accountType: e.currentTarget.checked ? 'admin' : 'user',
+                      })
+                    }
+                  />
+                )}
 
-            <label htmlFor="accountType" className="label cursor-pointer">
-              Administrator
-            </label>
-          </div>
+                <label htmlFor="accountType" className="label cursor-pointer">
+                  Administrator
+                </label>
+              </div>
 
-          <input
-            type="submit"
-            value={isEditing ? 'Update User' : 'Create User'}
-            className={isEditing ? 'btn btn-warning btn-outline mt-5' : 'btn btn-success btn-outline mt-5'}
-          />
-          {!isEditing && <input type="reset" value="Clear Form" className="btn btn-error btn-outline" />}
+              <input
+                type="submit"
+                value={isEditing ? 'Update User' : 'Create User'}
+                className={isEditing ? 'btn btn-warning btn-outline mt-5' : 'btn btn-success btn-outline mt-5'}
+              />
+              {!isEditing && <input type="reset" value="Clear Form" className="btn btn-error btn-outline" />}
+            </div>
+          </div>
         </div>
       </form>
 
       {/* EDIT FORM */}
-      <form className="edit-user-form" onSubmit={onSearch} onReset={onResetSearch}>
-        <div className="search-bar-container">
-          <input
-            type="text"
-            placeholder="Search only for editing a user"
-            className="input input-bordered"
-            value={searchFormData.query}
-            onChange={(e) =>
-              setSearchFormData({
-                ...searchFormData,
-                query: e.target.value,
-              })
-            }
-          />
-          <input type="submit" value="Search" className="btn btn-accent btn-outline" />
-          <input type="reset" value="Reset" className="btn btn-error btn-outline" />
-        </div>
-        {searchFormData.matchingUsers.length > 0 && (
-          <div className="user-results-container">
-            <div className="grid-headers contents text-sm uppercase font-semibold text-center">
-              <h1 className="rounded-tl-xl">Avatar</h1>
-              <h1>Name</h1>
-              <h1>Email</h1>
-              <h1>Type</h1>
-              <h1 className="rounded-tr-xl">Actions</h1>
-            </div>
+      {editMode && (
+        <form className="edit-user-form" onSubmit={onSearch} onReset={onResetSearch}>
+          <h1 className="text-xl font-bold">Search for User</h1>
+          <div className="search-bar-container">
+            <input
+              type="text"
+              placeholder="Search for editing a user"
+              className="input input-bordered"
+              value={searchFormData.query}
+              onChange={(e) =>
+                setSearchFormData({
+                  ...searchFormData,
+                  query: e.target.value,
+                })
+              }
+            />
+            <input type="submit" value="Search" className="btn btn-accent btn-outline" />
+            <input type="reset" value="Reset" className="btn btn-error btn-outline" />
+          </div>
+          {searchFormData.matchingUsers.length > 0 && (
+            <div className="user-results-container">
+              <div className="grid-headers contents text-sm uppercase font-semibold text-center">
+                <h1 className="rounded-tl-xl">Avatar</h1>
+                <h1>Name</h1>
+                <h1>Email</h1>
+                <h1>Type</h1>
+                <h1 className="rounded-tr-xl">Actions</h1>
+              </div>
 
-            {searchFormData.matchingUsers.map((user) => (
-              <div className="grid-content contents" key={user.userRef}>
-                <div className="image-container w-full flex justify-center items-center">
-                  {user.profileImage === '' ? (
-                    <Avatar
-                      color={stringToColour(`${user.firstname} ${user.lastname}`)}
-                      fgColor={invertColor(stringToColour(`${user.firstname} ${user.lastname}`), true)}
-                      name={`${user.firstname} ${user.lastname}`}
-                      size="56"
-                      textSizeRatio={2.5}
-                      round="true"
-                      className="rounded-xl"
-                    />
-                  ) : (
-                    <img src={user.profileImage} alt="avatar" className="w-14 rounded-xl" />
-                  )}
-                </div>
-                <h1>
-                  {user.firstname} {user.lastname}
-                </h1>
-                <h1>{user.email}</h1>
-                <h1>{user.accountType}</h1>
-                <div className="buttons">
-                  {isEditing && editingUser?.userRef === user.userRef ? (
-                    <button type="button" className="btn btn-xs btn-warning btn-outline" onClick={onCancelEdit}>
-                      Cancel
-                    </button>
-                  ) : (
+              {searchFormData.matchingUsers.map((user) => (
+                <div className="grid-content contents" key={user.userRef}>
+                  <div className="image-container w-full flex justify-center items-center">
+                    {user.profileImage === '' ? (
+                      <Avatar
+                        color={stringToColour(`${user.firstname} ${user.lastname}`)}
+                        fgColor={invertColor(stringToColour(`${user.firstname} ${user.lastname}`), true)}
+                        name={`${user.firstname} ${user.lastname}`}
+                        size="56"
+                        textSizeRatio={2.5}
+                        round="true"
+                        className="rounded-xl"
+                      />
+                    ) : (
+                      <img src={user.profileImage} alt="avatar" className="w-14 rounded-xl" />
+                    )}
+                  </div>
+                  <h1>
+                    {user.firstname} {user.lastname}
+                  </h1>
+                  <h1>{user.email}</h1>
+                  <h1>{user.accountType}</h1>
+                  <div className="buttons">
+                    {isEditing && editingUser?.userRef === user.userRef ? (
+                      <button type="button" className="btn btn-xs btn-warning btn-outline" onClick={onCancelEdit}>
+                        Cancel
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn btn-xs btn-accent btn-outline"
+                        onClick={() => {
+                          onEdit(user);
+                        }}
+                      >
+                        Edit
+                      </button>
+                    )}
                     <button
                       type="button"
-                      className="btn btn-xs btn-accent btn-outline"
+                      className="btn btn-xs btn-error btn-outline"
                       onClick={() => {
-                        onEdit(user);
+                        onDelete(user);
                       }}
                     >
-                      Edit
+                      Delete
                     </button>
-                  )}
-                  <button
-                    type="button"
-                    className="btn btn-xs btn-error btn-outline"
-                    onClick={() => {
-                      onDelete(user);
-                    }}
-                  >
-                    Delete
-                  </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </form>
+              ))}
+            </div>
+          )}
+        </form>
+      )}
     </div>
   );
 }
