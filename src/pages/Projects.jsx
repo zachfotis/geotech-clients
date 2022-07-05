@@ -1,39 +1,44 @@
 import { useContext, useEffect, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { getDocs, collection, query, where } from 'firebase/firestore';
+import { getDocs, doc, getDoc, deleteDoc, collection, query, where } from 'firebase/firestore';
 import FirebaseContext from '../context/auth/FirebaseContext';
 import { db } from '../firebase.config';
 import { toast } from 'react-toastify';
 
 function Projects() {
-  const { user, loggedIn } = useContext(FirebaseContext);
+  const { user, loggedIn, setLoading } = useContext(FirebaseContext);
+  const [isAdmin, setIsAdmin] = useState(user?.accountType === 'admin' ? true : false);
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    const getProjects = async () => {
-      try {
-        let q;
-        if (user.accountType === 'admin') {
-          q = query(collection(db, 'projects'));
-        } else {
-          q = query(collection(db, 'projects'), where('userRef', '==', user.uid));
-        }
-        const querySnapshot = await getDocs(q);
-        const projects = querySnapshot.docs.map((doc) => doc.data());
-        setProjects(projects);
-      } catch {
-        toast.error('Error fetching projects');
-      }
-    };
+    setIsAdmin(user?.accountType === 'admin' ? true : false);
+  }, [user]);
 
+  const getProjects = async () => {
+    try {
+      let q;
+      if (isAdmin) {
+        q = query(collection(db, 'projects'));
+      } else {
+        q = query(collection(db, 'projects'), where('userRef', '==', user.uid));
+      }
+      const querySnapshot = await getDocs(q);
+      const projects = querySnapshot.docs.map((doc) => doc.data());
+      setProjects(projects);
+    } catch {
+      toast.error('Error fetching projects');
+    }
+  };
+
+  useEffect(() => {
     if (loggedIn && user) {
       getProjects();
     }
 
     return () => {};
-  }, [loggedIn]); // eslint-disable-line
+  }, [loggedIn, isAdmin, user]);
 
   const onSearch = (e) => {
     e.preventDefault();
@@ -42,13 +47,29 @@ function Projects() {
       const filtered = projects.filter(
         (project) =>
           project.title.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          project.company.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          project.id.toLowerCase().includes(e.target.value.toLowerCase())
+          project.companyName.toLowerCase().includes(e.target.value.toLowerCase()) ||
+          project.id.toString().includes(e.target.value.toLowerCase())
       );
       setFilteredProjects(filtered);
     } else {
       setFilteredProjects([]);
     }
+  };
+
+  const onDelete = async (id) => {
+    setLoading(true);
+    try {
+      // get doc ref
+      const q = query(collection(db, 'projects'), where('id', '==', id));
+      const querySnapshot = await getDocs(q);
+      const docRef = querySnapshot.docs[0].ref;
+      await deleteDoc(docRef);
+      toast.success('Project deleted');
+      getProjects();
+    } catch (error) {
+      toast.error('Error deleting project');
+    }
+    setLoading(false);
   };
 
   if (!loggedIn || !user) {
@@ -84,8 +105,8 @@ function Projects() {
               <div className="grid-content contents" key={project.id}>
                 <p>{project.id}</p>
                 <p>{project.title}</p>
-                <p>{project.company}</p>
-                <p>{new Date(project.createdAt.seconds * 1000).toLocaleDateString()}</p>
+                <p>{project.companyName}</p>
+                <p>{new Date(project.timestamp.seconds * 1000).toLocaleDateString()}</p>
                 <div className="actions">
                   <Link
                     to={`/project/${project.id}`}
@@ -94,6 +115,16 @@ function Projects() {
                   >
                     View
                   </Link>
+                  {isAdmin && (
+                    <div
+                      className="btn btn-outline btn-error btn-sm w-28"
+                      onClick={() => {
+                        onDelete(project.id);
+                      }}
+                    >
+                      Delete
+                    </div>
+                  )}
                 </div>
               </div>
             ))
@@ -102,8 +133,8 @@ function Projects() {
               <div className="grid-content contents" key={project.id}>
                 <p>{project.id}</p>
                 <p>{project.title}</p>
-                <p>{project.company}</p>
-                <p>{new Date(project.createdAt.seconds * 1000).toLocaleDateString()}</p>
+                <p>{project.companyName}</p>
+                <p>{new Date(project.timestamp.seconds * 1000).toLocaleDateString()}</p>
                 <div className="actions">
                   <Link
                     to={`/project/${project.id}`}
@@ -112,6 +143,16 @@ function Projects() {
                   >
                     View
                   </Link>
+                  {isAdmin && (
+                    <div
+                      className="btn btn-outline btn-error btn-sm w-28"
+                      onClick={() => {
+                        onDelete(project.id);
+                      }}
+                    >
+                      Delete
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

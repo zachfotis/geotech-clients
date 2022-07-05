@@ -87,7 +87,7 @@ function CreateCompany() {
     } else if (isEditing && vat.length === 9) {
       fetchVatFromFirebase();
     }
-  }, [vat]);
+  }, [vat]); // eslint-disable-line
 
   // Wake up server
   useEffect(() => {
@@ -160,14 +160,10 @@ function CreateCompany() {
   return (
     <div className="create-company">
       <div className="server-status">
-        <p>Server Status: </p>
+        <p style={{ marginRight: 10 }}>Server Status: </p>
         {isServerConnecting && <SpinnerSmall />}
         {isServerConnected && (
-          <img
-            src={require('../../assets/icons/connected.png')}
-            alt="green check"
-            style={{ width: 20, height: 20, marginLeft: 10 }}
-          />
+          <img src={require('../../assets/icons/connected.png')} alt="green check" style={{ width: 20, height: 20 }} />
         )}
       </div>
       <h1 className="text-xl font-bold">{!isEditing ? 'Create New' : 'Modify Existing'} Company</h1>
