@@ -531,6 +531,15 @@ nav .top-menu {
   flex-wrap: wrap;
   gap: 20px;
   padding: 20px;
+  position: relative;
+}
+.dashboard-section .tab-content .create-company .server-status {
+  position: absolute;
+  right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-right: 10px;
 }
 
 .create-company-form {
