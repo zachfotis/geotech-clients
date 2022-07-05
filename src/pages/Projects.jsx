@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
-import { getDocs, doc, getDoc, deleteDoc, collection, query, where } from 'firebase/firestore';
+import { getDocs, orderBy, deleteDoc, collection, query, where } from 'firebase/firestore';
 import FirebaseContext from '../context/auth/FirebaseContext';
 import { db } from '../firebase.config';
 import { toast } from 'react-toastify';
@@ -20,14 +20,14 @@ function Projects() {
     try {
       let q;
       if (isAdmin) {
-        q = query(collection(db, 'projects'));
+        q = query(collection(db, 'projects'), orderBy('id', 'desc'));
       } else {
-        q = query(collection(db, 'projects'), where('userRef', '==', user.uid));
+        q = query(collection(db, 'projects'), where('userRef', '==', user.uid), orderBy('id', 'desc'));
       }
       const querySnapshot = await getDocs(q);
       const projects = querySnapshot.docs.map((doc) => doc.data());
       setProjects(projects);
-    } catch {
+    } catch (error) {
       toast.error('Error fetching projects');
     }
   };
@@ -41,7 +41,8 @@ function Projects() {
   }, [loggedIn, isAdmin, user]);
 
   const onSearch = (e) => {
-    e.preventDefault();
+    e && e.preventDefault();
+    // TODO: fix the form search
     setSearch(e.target.value);
     if (e.target.value.length > 0) {
       const filtered = projects.filter(
@@ -86,77 +87,83 @@ function Projects() {
           className="input input-bordered w-full"
           value={search}
           onChange={onSearch}
-          onSubmit={onSearch}
         />
         <button type="submit" className="btn btn-black">
           Search
         </button>
       </form>
-      <div className="projects-container">
-        <div className="grid-headers contents text-md uppercase font-semibold text-center">
-          <h1 className="rounded-tl-xl">Project ID</h1>
-          <h1>Project Name</h1>
-          <h1>Company</h1>
-          <h1>Date</h1>
-          <h1 className="rounded-tr-xl">Actions</h1>
+      {projects.length === 0 ? (
+        <div className="not-found-container flex flex-col justify-center items-center w-full mt-10">
+          <img src={require('../assets/icons/not-found.png')} alt="not found" />
+          <p>No Projects Found!</p>
         </div>
-        {filteredProjects.length > 0
-          ? filteredProjects.map((project) => (
-              <div className="grid-content contents" key={project.id}>
-                <p>{project.id}</p>
-                <p>{project.title}</p>
-                <p>{project.companyName}</p>
-                <p>{new Date(project.timestamp.seconds * 1000).toLocaleDateString()}</p>
-                <div className="actions">
-                  <Link
-                    to={`/project/${project.id}`}
-                    state={project}
-                    className="btn btn-outline btn-accent btn-sm w-28"
-                  >
-                    View
-                  </Link>
-                  {isAdmin && (
-                    <div
-                      className="btn btn-outline btn-error btn-sm w-28"
-                      onClick={() => {
-                        onDelete(project.id);
-                      }}
+      ) : (
+        <div className="projects-container">
+          <div className="grid-headers contents text-md uppercase font-semibold text-center">
+            <h1 className="rounded-tl-xl">Project ID</h1>
+            <h1>Project Name</h1>
+            <h1>Company</h1>
+            <h1>Date</h1>
+            <h1 className="rounded-tr-xl">Actions</h1>
+          </div>
+          {filteredProjects.length > 0
+            ? filteredProjects.map((project) => (
+                <div className="grid-content contents" key={project.id}>
+                  <p>{project.id}</p>
+                  <p>{project.title}</p>
+                  <p>{project.companyName}</p>
+                  <p>{new Date(project.timestamp.seconds * 1000).toLocaleDateString()}</p>
+                  <div className="actions">
+                    <Link
+                      to={`/project/${project.id}`}
+                      state={project}
+                      className="btn btn-outline btn-accent btn-sm w-28"
                     >
-                      Delete
-                    </div>
-                  )}
+                      View
+                    </Link>
+                    {isAdmin && (
+                      <div
+                        className="btn btn-outline btn-error btn-sm w-28"
+                        onClick={() => {
+                          onDelete(project.id);
+                        }}
+                      >
+                        Delete
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))
-          : projects.length > 0 &&
-            projects.map((project) => (
-              <div className="grid-content contents" key={project.id}>
-                <p>{project.id}</p>
-                <p>{project.title}</p>
-                <p>{project.companyName}</p>
-                <p>{new Date(project.timestamp.seconds * 1000).toLocaleDateString()}</p>
-                <div className="actions">
-                  <Link
-                    to={`/project/${project.id}`}
-                    state={project}
-                    className="btn btn-outline btn-accent btn-sm w-28"
-                  >
-                    View
-                  </Link>
-                  {isAdmin && (
-                    <div
-                      className="btn btn-outline btn-error btn-sm w-28"
-                      onClick={() => {
-                        onDelete(project.id);
-                      }}
+              ))
+            : projects.length > 0 &&
+              projects.map((project) => (
+                <div className="grid-content contents" key={project.id}>
+                  <p>{project.id}</p>
+                  <p>{project.title}</p>
+                  <p>{project.companyName}</p>
+                  <p>{new Date(project.timestamp.seconds * 1000).toLocaleDateString()}</p>
+                  <div className="actions">
+                    <Link
+                      to={`/project/${project.id}`}
+                      state={project}
+                      className="btn btn-outline btn-accent btn-sm w-28"
                     >
-                      Delete
-                    </div>
-                  )}
+                      View
+                    </Link>
+                    {isAdmin && (
+                      <div
+                        className="btn btn-outline btn-error btn-sm w-28"
+                        onClick={() => {
+                          onDelete(project.id);
+                        }}
+                      >
+                        Delete
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
-      </div>
+              ))}
+        </div>
+      )}
     </section>
   );
 }

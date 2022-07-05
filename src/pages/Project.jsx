@@ -65,7 +65,7 @@ function Project() {
               </span>
               <h2>Contact Email: </h2>
               <span>{projectUser?.email}</span>
-              <h2>Date:</h2>
+              <h2>Created At:</h2>
               <span>{project.date}</span>
             </div>
             <div className="right-container">
@@ -80,7 +80,7 @@ function Project() {
               </span>
               <h2>Email:</h2>
               <span>{projectCompany?.email}</span>
-              <h2>Telephone:</h2>
+              <h2>Phone:</h2>
               <span>{projectCompany?.phone}</span>
             </div>
           </div>

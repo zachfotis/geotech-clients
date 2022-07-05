@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FirebaseContext from '../../context/auth/FirebaseContext';
-import { getDocs, getDoc, addDoc, setDoc, doc, collection, serverTimestamp } from 'firebase/firestore';
+import { getDocs, getDoc, addDoc, setDoc, doc, collection, serverTimestamp, query, orderBy } from 'firebase/firestore';
 import { db } from '../../firebase.config';
 import { toast } from 'react-toastify';
 
@@ -15,18 +16,21 @@ function CreateProject() {
     userRef: '',
     companyName: '',
   });
-  const [isReset, setIsReset] = useState(false);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getUsers = async () => {
       setLoading(true);
       try {
         // Get Users
-        const userSnap = await getDocs(collection(db, 'users'));
+        let q = query(collection(db, 'users'), orderBy('lastname', 'asc'));
+        const userSnap = await getDocs(q);
         const users = userSnap.docs.map((doc) => doc.data());
         setUsers(users);
         // Get Companies
-        const companiesSnap = await getDocs(collection(db, 'companies'));
+        q = query(collection(db, 'companies'), orderBy('title', 'asc'));
+        const companiesSnap = await getDocs(q);
         const companies = companiesSnap.docs.map((doc) => doc.data());
         setCompanies(companies);
         // Get Current Project ID
@@ -41,7 +45,7 @@ function CreateProject() {
     };
 
     getUsers();
-  }, [isReset]);
+  }, []);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -61,9 +65,8 @@ function CreateProject() {
       await addDoc(collection(db, 'projects'), projectFormCopy);
       // Increment Current Project ID
       await setDoc(doc(db, 'utilities', 'current-project-id'), { id: projectFormCopy.id });
-      onReset();
-      setIsReset(!isReset);
       toast.success('Project created!');
+      navigate('/projects');
     } catch (error) {
       console.log(error);
       toast.error('Error creating project');
@@ -93,12 +96,12 @@ function CreateProject() {
           <select
             className="select select-bordered select-sm"
             id="user-select"
-            selected={projectForm.userRef}
+            defaultValue={'default'}
             onChange={(e) => {
               setProjectForm({ ...projectForm, userRef: e.target.value });
             }}
           >
-            <option disabled selected>
+            <option disabled value="default">
               Select User
             </option>
 
@@ -117,7 +120,7 @@ function CreateProject() {
           <select
             className="select select-bordered select-sm"
             id="company-select"
-            selected={projectForm.companyRef}
+            defaultValue={'default'}
             onChange={(e) => {
               setProjectForm({
                 ...projectForm,
@@ -126,7 +129,7 @@ function CreateProject() {
               });
             }}
           >
-            <option disabled selected>
+            <option disabled value="default">
               Select Company
             </option>
 
