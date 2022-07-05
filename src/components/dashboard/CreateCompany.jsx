@@ -56,6 +56,8 @@ function CreateCompany() {
     }
   }, [vat]);
 
+  // TODO: Wake up server - https://geotech-server.herokuapp.com/api/v1/status
+
   const onReset = () => {
     setVat('');
     setCreateCompanyForm({
