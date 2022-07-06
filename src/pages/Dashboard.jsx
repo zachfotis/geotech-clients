@@ -1,14 +1,13 @@
-import { useState, useContext, useEffect } from 'react';
-import { Link, NavLink, Navigate, Routes, Route } from 'react-router-dom';
+import { useContext } from 'react';
+import { NavLink, Navigate, Routes, Route } from 'react-router-dom';
 import FirebaseContext from '../context/auth/FirebaseContext';
-import { toast } from 'react-toastify';
 import CreateProject from '../components/dashboard/CreateProject';
 import CreateUser from '../components/dashboard/CreateUser';
 import CreateCompany from '../components/dashboard/CreateCompany';
-import CreateFile from '../components/dashboard/CreateFile';
+import UploadFile from '../components/dashboard/UploadFile';
 
 function Dashboard() {
-  const { user, loggedIn, setLoading } = useContext(FirebaseContext);
+  const { user, loggedIn } = useContext(FirebaseContext);
 
   // Apply style to active tab
   const activeLink = ({ isActive }) => (isActive ? 'tab tab-lifted tab-active' : 'tab tab-lifted');
@@ -39,7 +38,7 @@ function Dashboard() {
           <Route path="/project" element={<CreateProject />} />
           <Route path="/user" element={<CreateUser />} />
           <Route path="/company" element={<CreateCompany />} />
-          <Route path="/file" element={<CreateFile />} />
+          <Route path="/file" element={<UploadFile />} />
         </Routes>
       </div>
     </section>

@@ -1,6 +1,6 @@
 import { useState, useContext, useEffect } from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
-import { getDoc, doc } from 'firebase/firestore';
+import { getDoc, getDocs, doc, query, collection, where, orderBy } from 'firebase/firestore';
 import FirebaseContext from '../context/auth/FirebaseContext';
 import { db } from '../firebase.config';
 import { toast } from 'react-toastify';
@@ -10,7 +10,9 @@ function Project() {
   const { state } = useLocation();
   const [projectUser, setProjectUser] = useState(null);
   const [projectCompany, setProjectCompany] = useState(null);
+  const [projectFiles, setProjectFiles] = useState(null);
   const [project, setProject] = useState(state);
+  const [categories, setCategories] = useState(null);
 
   useEffect(() => {
     const getProjectData = async () => {
@@ -33,7 +35,17 @@ function Project() {
         const docSnap2 = await getDoc(docRef2);
         const user = docSnap2.data();
         setProjectUser(user);
+        // Get Project Files
+        const q = query(
+          collection(db, 'files'),
+          where('projectRef', '==', project.id.toString()),
+          orderBy('timestamp', 'desc')
+        );
+        const filesSnap = await getDocs(q);
+        const files = filesSnap.docs.map((doc) => doc.data());
+        setProjectFiles(files);
       } catch (error) {
+        console.log(error);
         toast.error('Error fetching data');
       }
       setLoading(false);
@@ -43,6 +55,37 @@ function Project() {
       getProjectData();
     }
   }, []); // eslint-disable-line
+
+  useEffect(() => {
+    if (!projectFiles) {
+      return;
+    }
+
+    const categoriesObject = projectFiles.reduce((acc, file) => {
+      if (!acc[file.category]) {
+        acc[file.category] = {};
+      }
+      if (!acc[file.category][file.type]) {
+        acc[file.category][file.type] = [];
+      }
+
+      // Add file icon to each file
+      let fileTypeIcon = null;
+      try {
+        fileTypeIcon = require(`../assets/file-types/${file.fileType}.png`);
+      } catch (error) {
+        fileTypeIcon = require('../assets/file-types/unknown.png');
+      }
+
+      acc[file.category][file.type].push({
+        ...file,
+        fileTypeIcon,
+      });
+      return acc;
+    }, {});
+
+    setCategories(categoriesObject);
+  }, [projectFiles]);
 
   if (!loggedIn || !user) {
     return <Navigate to="/login" />;
@@ -85,49 +128,37 @@ function Project() {
             </div>
           </div>
         </div>
-        <div className="project-files-container">
-          <h1>Documents for Services</h1>
-          <div className="category-container shadow-md">
-            <h2>Purchase Orders (PO)</h2>
-            <div className="category-files-container">
-              <img src="https://www.freeiconspng.com/thumbs/pdf-icon-png/pdf-icon-4.png" alt="file type" />
-              <div className="file-download">
-                <h2>Technical study for the well GA-01</h2>
-                <button className="btn btn-outline btn-xs btn-success">Download</button>
-              </div>
-            </div>
-            <div className="category-files-container">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Microsoft_Word_2013-2019_logo.svg/1200px-Microsoft_Word_2013-2019_logo.svg.png"
-                alt="file type"
-              />
-              <div className="file-download">
-                <h2>Technical study for the well GA-01</h2>
-                <button className="btn btn-outline btn-xs btn-success">Download</button>
-              </div>
-            </div>
+        {/* FILES */}
+        {categories && Object.keys(categories).length === 0 && (
+          <div className="not-found-container flex flex-col justify-center items-center w-full mt-10">
+            <img src={require('../assets/icons/not-found.png')} alt="not found" />
+            <p>No Files Found!</p>
           </div>
-          <div className="category-container shadow-md">
-            <h2>Private Agreement</h2>
-            <div className="category-files-container">
-              <img src="https://www.freeiconspng.com/thumbs/pdf-icon-png/pdf-icon-4.png" alt="file type" />
-              <div className="file-download">
-                <h2>The private agreement between companies for the current project</h2>
-                <button className="btn btn-outline btn-xs btn-success">Download</button>
-              </div>
+        )}
+        {categories &&
+          Object.keys(categories).map((category) => (
+            <div key={category} className="project-files-container">
+              {/* First Letter of each word capitalized */}
+              <h1>
+                Documents for{' '}
+                {category.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())}
+              </h1>
+              {Object.keys(categories[category]).map((type) => (
+                <div key={type} className="category-container shadow-md">
+                  <h2>{type.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())}s</h2>
+                  {categories[category][type].map((file) => (
+                    <div key={file.id} className="category-files-container">
+                      <img src={file.fileTypeIcon} alt="file type" />
+                      <div className="file-download">
+                        <h2>{file.fileName}</h2>
+                        <button className="btn btn-outline btn-xs btn-success">Download</button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
             </div>
-            <div className="category-files-container">
-              <img
-                src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Microsoft_Word_2013-2019_logo.svg/1200px-Microsoft_Word_2013-2019_logo.svg.png"
-                alt="file type"
-              />
-              <div className="file-download">
-                <h2>Technical study for the well GA-01</h2>
-                <button className="btn btn-outline btn-xs btn-success">Download</button>
-              </div>
-            </div>
-          </div>
-        </div>
+          ))}
       </section>
     );
 }
