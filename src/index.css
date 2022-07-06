@@ -334,6 +334,15 @@ nav .top-menu {
   font-size: 16px;
 }
 
+.project-section .project-files-container .category-container .category-files-container .file-download .buttons {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  font-size: 16px;
+}
+
 /* ----------------------------- DASHBOARD ----------------------------- */
 
 .dashboard-section {

@@ -11,6 +11,7 @@ export const FirebaseProvider = ({ children }) => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(user?.accountType === 'admin' ? true : false);
 
   const isMounted = useRef(true);
 
@@ -44,12 +45,18 @@ export const FirebaseProvider = ({ children }) => {
     };
   }, [isMounted]);
 
+  // Update if user is admin
+  useEffect(() => {
+    setIsAdmin(user?.accountType === 'admin' ? true : false);
+  }, [user]);
+
   return (
     <FirebaseContext.Provider
       value={{
         user,
         loading,
         loggedIn,
+        isAdmin,
         setLoading,
         setLoggedIn,
       }}

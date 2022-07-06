@@ -6,15 +6,10 @@ import { db } from '../firebase.config';
 import { toast } from 'react-toastify';
 
 function Projects() {
-  const { user, loggedIn, setLoading } = useContext(FirebaseContext);
-  const [isAdmin, setIsAdmin] = useState(user?.accountType === 'admin' ? true : false);
+  const { user, loggedIn, setLoading, isAdmin } = useContext(FirebaseContext);
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [search, setSearch] = useState('');
-
-  useEffect(() => {
-    setIsAdmin(user?.accountType === 'admin' ? true : false);
-  }, [user]);
 
   const getProjects = async () => {
     try {
