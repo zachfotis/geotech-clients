@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { getDocs, orderBy, deleteDoc, collection, query, where } from 'firebase/firestore';
+import { getStorage, ref, deleteObject } from 'firebase/storage';
 import FirebaseContext from '../context/auth/FirebaseContext';
 import { db } from '../firebase.config';
 import { toast } from 'react-toastify';
@@ -61,14 +62,27 @@ function Projects() {
     setSearch(e.target.elements['search-bar'].value);
   };
 
+  // TODO: Add modal to delete project
   const onDelete = async (id) => {
     setLoading(true);
     try {
-      // get doc ref
-      const q = query(collection(db, 'projects'), where('id', '==', id));
+      // Delete Project
+      let q = query(collection(db, 'projects'), where('id', '==', id));
       const querySnapshot = await getDocs(q);
       const docRef = querySnapshot.docs[0].ref;
       await deleteDoc(docRef);
+
+      // Delete Project Files
+      const storage = getStorage();
+      q = query(collection(db, 'files'), where('projectRef', '==', id));
+      const querySnapshot2 = await getDocs(q);
+      querySnapshot2.docs.forEach(async (doc) => {
+        const docRef = doc.ref;
+        const docData = doc.data();
+        await deleteDoc(docRef);
+        const fileRef = ref(storage, docData.fileURL);
+        await deleteObject(fileRef);
+      });
       toast.success('Project deleted');
       getProjects();
     } catch (error) {

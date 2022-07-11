@@ -161,7 +161,7 @@ function UploadFile() {
 
       // Upload to firestore
       const dataCopy = {
-        projectRef: selectedProject,
+        projectRef: Number(selectedProject),
         userRef: projects.filter((project) => project.companyRef === selectedCompany)[0].userRef,
         category: selectedCategory,
         type: selectedType,

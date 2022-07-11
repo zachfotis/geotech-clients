@@ -36,11 +36,7 @@ function Project() {
       const user = docSnap2.data();
       setProjectUser(user);
       // Get Project Files
-      const q = query(
-        collection(db, 'files'),
-        where('projectRef', '==', project.id.toString()),
-        orderBy('timestamp', 'desc')
-      );
+      const q = query(collection(db, 'files'), where('projectRef', '==', project.id), orderBy('timestamp', 'desc'));
       const filesSnap = await getDocs(q);
       const files = filesSnap.docs.map((doc) => {
         return {
@@ -97,6 +93,8 @@ function Project() {
   }, [projectFiles]);
 
   // On File Delete
+  // TODO: Add modal to delete file
+
   const onFileDelete = async (file) => {
     setLoading(true);
     // Delete file from storage
@@ -175,12 +173,7 @@ function Project() {
                     <div key={file.fileName} className="category-files-container">
                       <img src={file.fileTypeIcon} alt="file type" />
                       <div className="file-download">
-                        <h2>
-                          {file.fileName.replace(
-                            /\w\S*/g,
-                            (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-                          )}
-                        </h2>
+                        <h2>{file.fileName}</h2>
                         <h2>Uploaded: {new Date(file.timestamp.seconds * 1000).toLocaleString()}</h2>
                         <div className="buttons">
                           <a
