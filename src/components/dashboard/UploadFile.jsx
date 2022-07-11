@@ -1,16 +1,5 @@
 import { useState, useEffect, useContext } from 'react';
-import {
-  getDocs,
-  getDoc,
-  addDoc,
-  setDoc,
-  doc,
-  collection,
-  where,
-  serverTimestamp,
-  query,
-  orderBy,
-} from 'firebase/firestore';
+import { getDocs, getDoc, addDoc, doc, collection, where, serverTimestamp, query, orderBy } from 'firebase/firestore';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { db } from '../../firebase.config';
 import FirebaseContext from '../../context/auth/FirebaseContext';
@@ -67,7 +56,7 @@ function UploadFile() {
     };
 
     getCompanies();
-  }, []);
+  }, []); // eslint-disable-line
 
   // Get Projects
   useEffect(() => {
@@ -91,7 +80,7 @@ function UploadFile() {
     };
 
     getProjects();
-  }, [selectedCompany]);
+  }, [selectedCompany]); // eslint-disable-line
 
   // Store File to Firebase Storage -- PROMISE
   const storeFile = async (file) => {
@@ -157,7 +146,7 @@ function UploadFile() {
     };
 
     getUser();
-  }, [notifyUser, selectedProject, selectedCompany]);
+  }, [notifyUser, selectedProject, selectedCompany]); // eslint-disable-line
 
   // Send Email Fetch Function
   const sendEmail = async () => {

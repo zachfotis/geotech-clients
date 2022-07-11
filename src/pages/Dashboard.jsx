@@ -5,7 +5,6 @@ import CreateProject from '../components/dashboard/CreateProject';
 import CreateUser from '../components/dashboard/CreateUser';
 import CreateCompany from '../components/dashboard/CreateCompany';
 import UploadFile from '../components/dashboard/UploadFile';
-import SpinnerSmall from '../components/layout/SpinnerSmall';
 
 function Dashboard() {
   const { user, loggedIn } = useContext(FirebaseContext);
