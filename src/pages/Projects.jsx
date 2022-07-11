@@ -6,12 +6,13 @@ import { db } from '../firebase.config';
 import { toast } from 'react-toastify';
 
 function Projects() {
-  const { user, loggedIn, setLoading, isAdmin } = useContext(FirebaseContext);
+  const { user, loggedIn, loading, setLoading, isAdmin } = useContext(FirebaseContext);
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [search, setSearch] = useState('');
 
   const getProjects = async () => {
+    setLoading(true);
     try {
       let q;
       if (isAdmin) {
@@ -25,6 +26,7 @@ function Projects() {
     } catch (error) {
       toast.error('Error fetching projects');
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -95,11 +97,13 @@ function Projects() {
           Search
         </button>
       </form>
-      {projects.length === 0 ? (
-        <div className="not-found-container flex flex-col justify-center items-center w-full mt-10">
-          <img src={require('../assets/icons/not-found.png')} alt="not found" />
-          <p>No Projects Found!</p>
-        </div>
+      {projects.length === 0 || (filteredProjects.length === 0 && search.length > 0) ? (
+        !loading && (
+          <div className="not-found-container flex flex-col justify-center items-center w-full mt-10">
+            <img src={require('../assets/icons/not-found.png')} alt="not found" />
+            <p>No Projects Found!</p>
+          </div>
+        )
       ) : (
         <div className="projects-container">
           <div className="grid-headers contents text-md uppercase font-semibold text-center">
@@ -117,22 +121,32 @@ function Projects() {
                   <p>{project.companyName}</p>
                   <p>{new Date(project.timestamp.seconds * 1000).toLocaleDateString()}</p>
                   <div className="actions">
-                    <Link
-                      to={`/project/${project.id}`}
-                      state={project}
-                      className="btn btn-outline btn-accent btn-sm w-28"
-                    >
-                      View
-                    </Link>
-                    {isAdmin && (
-                      <div
-                        className="btn btn-outline btn-error btn-sm w-28"
-                        onClick={() => {
-                          onDelete(project.id);
-                        }}
+                    {isAdmin ? (
+                      <>
+                        <Link
+                          to={`/project/${project.id}`}
+                          state={project}
+                          className="btn btn-outline btn-accent btn-xs w-28"
+                        >
+                          View
+                        </Link>
+                        <div
+                          className="btn btn-outline btn-error btn-xs w-28"
+                          onClick={() => {
+                            onDelete(project.id);
+                          }}
+                        >
+                          Delete
+                        </div>
+                      </>
+                    ) : (
+                      <Link
+                        to={`/project/${project.id}`}
+                        state={project}
+                        className="btn btn-outline btn-accent btn-sm w-28"
                       >
-                        Delete
-                      </div>
+                        View
+                      </Link>
                     )}
                   </div>
                 </div>
@@ -145,22 +159,32 @@ function Projects() {
                   <p>{project.companyName}</p>
                   <p>{new Date(project.timestamp.seconds * 1000).toLocaleDateString()}</p>
                   <div className="actions">
-                    <Link
-                      to={`/project/${project.id}`}
-                      state={project}
-                      className="btn btn-outline btn-accent btn-sm w-28"
-                    >
-                      View
-                    </Link>
-                    {isAdmin && (
-                      <div
-                        className="btn btn-outline btn-error btn-sm w-28"
-                        onClick={() => {
-                          onDelete(project.id);
-                        }}
+                    {isAdmin ? (
+                      <>
+                        <Link
+                          to={`/project/${project.id}`}
+                          state={project}
+                          className="btn btn-outline btn-accent btn-xs w-28"
+                        >
+                          View
+                        </Link>
+                        <div
+                          className="btn btn-outline btn-error btn-xs w-28"
+                          onClick={() => {
+                            onDelete(project.id);
+                          }}
+                        >
+                          Delete
+                        </div>
+                      </>
+                    ) : (
+                      <Link
+                        to={`/project/${project.id}`}
+                        state={project}
+                        className="btn btn-outline btn-accent btn-sm w-28"
                       >
-                        Delete
-                      </div>
+                        View
+                      </Link>
                     )}
                   </div>
                 </div>

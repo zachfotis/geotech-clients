@@ -21,8 +21,6 @@ function CreateCompany() {
   const { setLoading } = useContext(FirebaseContext);
   const [isEditing, setIsEditing] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
-  const [isServerConnecting, setIsServerConnecting] = useState(false);
-  const [isServerConnected, setIsServerConnected] = useState(false);
   const [vat, setVat] = useState('');
   const [createCompanyForm, setCreateCompanyForm] = useState(emptyForm);
 
@@ -89,27 +87,6 @@ function CreateCompany() {
     }
   }, [vat]); // eslint-disable-line
 
-  // Wake up server
-  useEffect(() => {
-    const getGeotechServerStatus = async () => {
-      setIsServerConnecting(true);
-      try {
-        const response = await fetch('https://geotech-server.herokuapp.com/api/v1/status');
-        const data = await response.json();
-        if (data.status) {
-          setIsServerConnected(true);
-        } else {
-          setIsServerConnected(false);
-        }
-        setIsServerConnecting(false);
-      } catch (error) {
-        setIsServerConnecting(false);
-      }
-    };
-
-    getGeotechServerStatus();
-  }, []);
-
   const onSubmit = async (e) => {
     setLoading(true);
     e.preventDefault();
@@ -159,13 +136,6 @@ function CreateCompany() {
 
   return (
     <div className="create-company">
-      <div className="server-status">
-        <p style={{ marginRight: 10 }}>Server Status: </p>
-        {isServerConnecting && <SpinnerSmall />}
-        {isServerConnected && (
-          <img src={require('../../assets/icons/connected.png')} alt="green check" style={{ width: 20, height: 20 }} />
-        )}
-      </div>
       <h1 className="text-xl font-bold">{!isEditing ? 'Create New' : 'Modify Existing'} Company</h1>
       <form className="create-company-form" onReset={onReset} onSubmit={onSubmit}>
         <div className="checkbox-container">
@@ -185,7 +155,7 @@ function CreateCompany() {
             minLength="9"
             maxLength="9"
             required={true}
-            placeholder="V.A.T."
+            placeholder="TIN"
             className="input input-bordered input-ghost"
             value={vat}
             onChange={(e) => setVat(e.target.value)}

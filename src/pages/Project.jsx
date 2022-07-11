@@ -124,7 +124,7 @@ function Project() {
           {project.title} {project.isNew && <span className="badge badge-accent badge-md text-white">New</span>}
         </h1>
         <div className="project-info-container">
-          <div className="project-info shadow-lg outline outline-1 outline-teal-50 bg-teal-50">
+          <div className="project-info shadow-lg outline outline-1 outline-cyan-50 bg-cyan-50">
             <div className="left-container">
               <h2>Reference:</h2>
               <span>{project.id}</span>
@@ -140,7 +140,7 @@ function Project() {
             <div className="right-container ">
               <h2>Company:</h2>
               <span>
-                {projectCompany?.title} - {projectCompany?.vat}
+                {projectCompany?.title} {projectCompany?.vat}
               </span>
               <h2>Address:</h2>
               <span>
@@ -164,7 +164,6 @@ function Project() {
         {categories &&
           Object.keys(categories).map((category) => (
             <div key={category} className="project-files-container">
-              {/* First Letter of each word capitalized */}
               <h1>
                 Documents for{' '}
                 {category.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())}
@@ -182,6 +181,7 @@ function Project() {
                             (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
                           )}
                         </h2>
+                        <h2>Uploaded: {new Date(file.timestamp.seconds * 1000).toLocaleString()}</h2>
                         <div className="buttons">
                           <a
                             className="btn btn-outline btn-xs btn-success"

@@ -350,13 +350,31 @@ nav .top-menu {
   padding: 30px;
 }
 
-.dashboard-section > h1 {
-  width: fit-content;
-  margin: auto;
-  margin-bottom: 20px;
-  padding: 0px 20px;
-  font-size: 20px;
-  font-weight: 400;
+.dashboard-section nav {
+  margin-bottom: 30px;
+  padding: 5px 20px;
+  font-size: 16px;
+  font-weight: 300;
+}
+
+.dashboard-section nav .functions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 30px;
+}
+
+.dashboard-section nav .functions > div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.dashboard-section nav .circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
 }
 
 .dashboard-section .tab-content {
@@ -542,14 +560,6 @@ nav .top-menu {
   gap: 20px;
   padding: 20px;
   position: relative;
-}
-.dashboard-section .tab-content .create-company .server-status {
-  position: absolute;
-  right: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-right: 10px;
 }
 
 .create-company-form {
