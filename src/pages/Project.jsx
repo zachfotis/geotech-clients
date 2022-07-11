@@ -131,7 +131,7 @@ function Project() {
                 {projectUser?.firstname} {projectUser?.lastname}
               </span>
               <h2>Contact Email: </h2>
-              <span>{projectUser?.email}</span>
+              <a href={`mailto:${projectUser?.email}`}>{projectUser?.email}</a>
               <h2>Created At:</h2>
               <span>{project.date}</span>
             </div>
@@ -146,7 +146,7 @@ function Project() {
                 {projectCompany?.country}
               </span>
               <h2>Email:</h2>
-              <span>{projectCompany?.email}</span>
+              <a href={`mailto:${projectCompany?.email}`}>{projectCompany?.email}</a>
               <h2>Phone:</h2>
               <span>{projectCompany?.phone}</span>
             </div>
@@ -174,7 +174,9 @@ function Project() {
                       <img src={file.fileTypeIcon} alt="file type" />
                       <div className="file-download">
                         <h2>{file.fileName}</h2>
-                        <h2>Uploaded: {new Date(file.timestamp.seconds * 1000).toLocaleString()}</h2>
+                        <h2 className="uploaded">
+                          Uploaded: {new Date(file.timestamp.seconds * 1000).toLocaleString()}
+                        </h2>
                         <div className="buttons">
                           <a
                             className="btn btn-outline btn-xs btn-success"

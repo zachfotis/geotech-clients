@@ -261,15 +261,11 @@ nav .top-menu {
   border-radius: 0.75rem;
 }
 
-.project-section .project-info h2 {
+.project-section .project-info h2,
+.project-section .project-info span,
+.project-section .project-info a {
   font-size: 16px;
   font-weight: 400;
-  color: var(--heading-color);
-}
-
-.project-section .project-info span {
-  font-size: 16px;
-  font-weight: 700;
   color: var(--heading-color);
 }
 
@@ -330,12 +326,19 @@ nav .top-menu {
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  gap: 10px;
+  gap: 5px;
   font-size: 16px;
+}
+
+.project-section .project-files-container .category-container .category-files-container .file-download .uploaded {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--heading-color);
 }
 
 .project-section .project-files-container .category-container .category-files-container .file-download .buttons {
   width: 100%;
+  margin-top: 5px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -697,6 +700,18 @@ nav .top-menu {
 }
 
 .upload-file-form .container-5 {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.upload-file-form .container-5 input {
+  width: 20px;
+}
+
+.upload-file-form .container-6 {
   width: 100%;
   display: flex;
   flex-direction: column;

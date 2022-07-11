@@ -31,6 +31,8 @@ function UploadFile() {
     imgSource: '',
   });
   const [description, setDescription] = useState('');
+  const [notifyUser, setNotifyUser] = useState(false);
+  const [targetUser, setTargetUser] = useState('');
 
   const servicesTypes = [
     'quotation',
@@ -137,6 +139,57 @@ function UploadFile() {
     });
   };
 
+  // Get user if notifyUser is true
+  useEffect(() => {
+    if (!notifyUser || selectedProject === 'default') {
+      setTargetUser('');
+      return;
+    }
+
+    const getUser = async () => {
+      setLoading(true);
+      const userRef = projects.find((project) => project.id === Number(selectedProject)).userRef;
+      const docRef = doc(db, 'users', userRef);
+      const userSnap = await getDoc(docRef);
+      const user = userSnap.data();
+      setTargetUser(user);
+      setLoading(false);
+    };
+
+    getUser();
+  }, [notifyUser, selectedProject, selectedCompany]);
+
+  // Send Email Fetch Function
+  const sendEmail = async () => {
+    try {
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: targetUser.email,
+          company: companies.find((company) => company.vat === selectedCompany).title,
+          project: projects.find((project) => project.id === Number(selectedProject)).title,
+          category: selectedCategory,
+          type: selectedType,
+          filename: selectedFile.name,
+        }),
+      };
+
+      const response = await fetch('https://geotech-server.herokuapp.com/api/v1/sendEmail', options);
+      const data = await response.json();
+
+      if (data?.info?.messageId) {
+        toast.success('Email sent successfully');
+      } else {
+        toast.error('Error sending email');
+      }
+    } catch (error) {
+      toast.error('Error sending email');
+    }
+  };
+
   const onSubmit = async (e) => {
     e.preventDefault();
     if (
@@ -151,6 +204,11 @@ function UploadFile() {
       selectedType === 'default'
     ) {
       toast.error('Please fill out all fields');
+      return;
+    }
+
+    if (notifyUser && !targetUser) {
+      toast.error('You cannot notify a non-connected user');
       return;
     }
 
@@ -181,6 +239,11 @@ function UploadFile() {
         type: '',
         imgSource: '',
       });
+
+      // Send Email
+      if (notifyUser && targetUser) {
+        sendEmail();
+      }
 
       toast.success('File uploaded successfully');
     } catch (error) {
@@ -216,7 +279,8 @@ function UploadFile() {
             <select
               className="select select-bordered select-sm"
               id="company-select"
-              value={'default'}
+              defaultValue={'default'}
+              value={selectedCompany}
               onChange={(e) => {
                 setSelectedCompany(e.target.value);
                 setSelectedProject('default');
@@ -240,6 +304,7 @@ function UploadFile() {
             <select
               className="select select-bordered select-sm"
               id="project-select"
+              defaultValue={selectedProject}
               value={selectedProject}
               onChange={(e) => {
                 setSelectedProject(e.target.value);
@@ -266,7 +331,8 @@ function UploadFile() {
             <select
               className="select select-bordered select-sm"
               id="category-select"
-              value={'default'}
+              defaultValue={'default'}
+              value={selectedCategory}
               onChange={(e) => {
                 setSelectedCategory(e.target.value);
               }}
@@ -287,7 +353,8 @@ function UploadFile() {
             <select
               className="select select-bordered select-sm"
               id="type-select"
-              value={'default'}
+              defaultValue={'default'}
+              value={selectedType}
               onChange={(e) => {
                 setSelectedType(e.target.value);
               }}
@@ -365,6 +432,21 @@ function UploadFile() {
           />
         </div>
         <div className="container-5">
+          <input
+            type="checkbox"
+            className="checkbox checkbox-sm checkbox-accent"
+            id="accountType"
+            checked={notifyUser}
+            onChange={(e) => {
+              setNotifyUser(e.target.checked);
+            }}
+          />
+          <label htmlFor="accountType" className="label cursor-pointer">
+            Notify user when upload {notifyUser && targetUser && `(${targetUser.email})`}
+          </label>
+        </div>
+
+        <div className="container-6">
           <input type="submit" className="btn btn-outline btn-success" value="Upload File" />
           <input type="reset" value="Clear Form" className="btn btn-outline btn-error" />
         </div>
