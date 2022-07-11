@@ -58,11 +58,20 @@ function Dashboard() {
           <div className="server-status">
             <p>Server Status: </p>
             {isServerConnecting ? (
-              <div className="circle bg-orange-500 outline outline-1 outline-white" />
+              <div
+                className="circle bg-orange-500 outline outline-1 outline-white tooltip tooltip-bottom"
+                data-tip="Connecting..."
+              />
             ) : isServerConnected ? (
-              <div className="circle bg-green-500 outline outline-1 outline-white" />
+              <div
+                className="circle bg-green-500 outline outline-1 outline-white tooltip tooltip-bottom"
+                data-tip="Connected"
+              />
             ) : (
-              <div className="circle bg-red-500 outline outline-1 outline-white" />
+              <div
+                className="circle bg-red-500 outline outline-1 outline-white tooltip tooltip-bottom"
+                data-tip="Disconnected"
+              />
             )}
           </div>
           <div className="current-time">
