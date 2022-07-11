@@ -20,10 +20,10 @@ function UploadFile() {
   const { setLoading } = useContext(FirebaseContext);
   const [projects, setProjects] = useState([]);
   const [companies, setCompanies] = useState([]);
-  const [selectedCompany, setSelectedCompany] = useState('');
-  const [selectedProject, setSelectedProject] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedType, setSelectedType] = useState('');
+  const [selectedCompany, setSelectedCompany] = useState('default');
+  const [selectedProject, setSelectedProject] = useState('default');
+  const [selectedCategory, setSelectedCategory] = useState('default');
+  const [selectedType, setSelectedType] = useState('default');
   const [selectedFile, setSelectedFile] = useState({
     file: null,
     name: '',
@@ -139,7 +139,17 @@ function UploadFile() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedCompany || !selectedProject || !selectedCategory || !selectedType || !selectedFile.file) {
+    if (
+      !selectedCompany ||
+      !selectedProject ||
+      !selectedCategory ||
+      !selectedType ||
+      !selectedFile.file ||
+      selectedCompany === 'default' ||
+      selectedProject === 'default' ||
+      selectedCategory === 'default' ||
+      selectedType === 'default'
+    ) {
       toast.error('Please fill out all fields');
       return;
     }
@@ -174,7 +184,6 @@ function UploadFile() {
 
       toast.success('File uploaded successfully');
     } catch (error) {
-      console.log(error);
       toast.error('Error uploading file');
     }
 
@@ -182,10 +191,10 @@ function UploadFile() {
   };
 
   const onReset = () => {
-    setSelectedCompany('');
-    setSelectedProject('');
-    setSelectedCategory('');
-    setSelectedType('');
+    setSelectedCompany('default');
+    setSelectedProject('default');
+    setSelectedCategory('default');
+    setSelectedType('default');
     setSelectedFile({
       file: null,
       name: '',
@@ -207,9 +216,10 @@ function UploadFile() {
             <select
               className="select select-bordered select-sm"
               id="company-select"
-              defaultValue={'default'}
+              value={'default'}
               onChange={(e) => {
                 setSelectedCompany(e.target.value);
+                setSelectedProject('default');
               }}
             >
               <option disabled value="default">
@@ -230,7 +240,7 @@ function UploadFile() {
             <select
               className="select select-bordered select-sm"
               id="project-select"
-              defaultValue={'default'}
+              value={selectedProject}
               onChange={(e) => {
                 setSelectedProject(e.target.value);
               }}
@@ -256,7 +266,7 @@ function UploadFile() {
             <select
               className="select select-bordered select-sm"
               id="category-select"
-              defaultValue={'default'}
+              value={'default'}
               onChange={(e) => {
                 setSelectedCategory(e.target.value);
               }}
@@ -277,7 +287,7 @@ function UploadFile() {
             <select
               className="select select-bordered select-sm"
               id="type-select"
-              defaultValue={'default'}
+              value={'default'}
               onChange={(e) => {
                 setSelectedType(e.target.value);
               }}

@@ -250,6 +250,17 @@ nav .top-menu {
   margin-top: 30px;
 }
 
+.project-section .project-info {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  gap: 50px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  padding: 30px;
+  border-radius: 0.75rem;
+}
+
 .project-section .project-info h2 {
   font-size: 16px;
   font-weight: 400;
@@ -260,17 +271,6 @@ nav .top-menu {
   font-size: 16px;
   font-weight: 700;
   color: var(--heading-color);
-}
-
-.project-section .project-info {
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  gap: 70px;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  border-radius: 0.75rem;
-  padding: 30px;
 }
 
 .project-section .project-info .left-container,

@@ -123,8 +123,8 @@ function Project() {
         <h1>
           {project.title} {project.isNew && <span className="badge badge-accent badge-md text-white">New</span>}
         </h1>
-        <div className="project-info-container ">
-          <div className="project-info shadow-lg outline outline-1 outline-teal-400 bg-teal-50">
+        <div className="project-info-container">
+          <div className="project-info shadow-lg outline outline-1 outline-teal-50 bg-teal-50">
             <div className="left-container">
               <h2>Reference:</h2>
               <span>{project.id}</span>
@@ -137,7 +137,7 @@ function Project() {
               <h2>Created At:</h2>
               <span>{project.date}</span>
             </div>
-            <div className="right-container">
+            <div className="right-container ">
               <h2>Company:</h2>
               <span>
                 {projectCompany?.title} - {projectCompany?.vat}

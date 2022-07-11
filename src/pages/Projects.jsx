@@ -35,21 +35,28 @@ function Projects() {
     return () => {};
   }, [loggedIn, isAdmin, user]);
 
-  const onSearch = (e) => {
-    e && e.preventDefault();
-    // TODO: fix the form search
-    setSearch(e.target.value);
-    if (e.target.value.length > 0) {
+  useEffect(() => {
+    if (search.length > 0) {
       const filtered = projects.filter(
         (project) =>
-          project.title.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          project.companyName.toLowerCase().includes(e.target.value.toLowerCase()) ||
-          project.id.toString().includes(e.target.value.toLowerCase())
+          project.id.toString().includes(search.toLowerCase()) ||
+          project.title.toLowerCase().includes(search.toLowerCase()) ||
+          project.companyName.toLowerCase().includes(search.toLowerCase()) ||
+          new Date(project.timestamp.seconds * 1000).toLocaleDateString().includes(search.toLowerCase())
       );
       setFilteredProjects(filtered);
     } else {
       setFilteredProjects([]);
     }
+  }, [search]);
+
+  const onSearch = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    setSearch(e.target.elements['search-bar'].value);
   };
 
   const onDelete = async (id) => {
@@ -75,15 +82,16 @@ function Projects() {
   return (
     <section className="projects-section">
       <h1>{`Welcome ${user.firstname}`}</h1>
-      <form onSubmit={onSearch}>
+      <form onSubmit={onSubmit}>
         <input
           type="text"
           placeholder="Search for your project"
           className="input input-bordered w-full"
+          name="search-bar"
           value={search}
           onChange={onSearch}
         />
-        <button type="submit" className="btn btn-black">
+        <button type="submit" name="search-btn" className="btn btn-black">
           Search
         </button>
       </form>
@@ -101,7 +109,7 @@ function Projects() {
             <h1>Date</h1>
             <h1 className="rounded-tr-xl">Actions</h1>
           </div>
-          {filteredProjects.length > 0
+          {filteredProjects.length > 0 || search.length > 0
             ? filteredProjects.map((project) => (
                 <div className="grid-content contents" key={project.id}>
                   <p>{project.id}</p>
