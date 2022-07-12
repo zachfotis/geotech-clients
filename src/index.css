@@ -136,7 +136,7 @@ nav .top-menu {
 /* ----------------------------- PROJECTS ----------------------------- */
 
 .projects-section {
-  width: 70%;
+  width: 80%;
   flex: auto;
   padding: 40px;
   display: flex;
@@ -212,7 +212,7 @@ nav .top-menu {
 /* ----------------------------- SINGLE PROJECT ----------------------------- */
 
 .project-section {
-  width: 70%;
+  width: 80%;
   flex: auto;
   padding: 40px;
   display: flex;
