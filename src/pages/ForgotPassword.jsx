@@ -1,4 +1,5 @@
 import { useState, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import FirebaseContext from '../context/auth/FirebaseContext';
 import { toast } from 'react-toastify';
@@ -6,6 +7,7 @@ import { toast } from 'react-toastify';
 function ForgotPassword() {
   const { setLoading } = useContext(FirebaseContext);
   const [email, setEmail] = useState('');
+  const navigate = useNavigate();
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -18,11 +20,15 @@ function ForgotPassword() {
     try {
       const auth = getAuth();
       await sendPasswordResetEmail(auth, email);
-      toast.success('Email sent');
+      setEmail('');
+      toast.success('Check your email for a password reset link');
+      setLoading(false);
     } catch (error) {
-      toast.error('Something went wrong');
+      setLoading(false);
+      return toast.error('Something went wrong');
     }
-    setLoading(false);
+
+    navigate('/login');
   };
 
   return (
