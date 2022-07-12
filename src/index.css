@@ -133,6 +133,50 @@ nav .top-menu {
   justify-content: center;
 }
 
+/* ----------------------------- FORGOT PASSWORD ----------------------------- */
+
+.forgot-password-section {
+  width: 80%;
+  flex: auto;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.forgot-password-section h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.forgot-password-section form {
+  width: 100%;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 20px;
+}
+
+.forgot-password-section form .label {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 0;
+}
+
+.forgot-password-section form .label input {
+  width: 100%;
+  max-width: 400px;
+  transition: all 0.3s ease-in-out;
+}
+
 /* ----------------------------- PROJECTS ----------------------------- */
 
 .projects-section {
@@ -756,6 +800,10 @@ nav .top-menu {
 
   nav .top-menu > li:first-child {
     display: none;
+  }
+  /* FORGOT PASSWORD */
+  .forgot-password-section {
+    width: 100%;
   }
 
   /* PROJECTS */
