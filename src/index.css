@@ -189,7 +189,7 @@ nav .top-menu {
 }
 
 .projects-section .projects-container .grid-content > * {
-  padding: 20px 0;
+  padding: 20px 10px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -254,11 +254,12 @@ nav .top-menu {
   width: 100%;
   display: flex;
   justify-content: flex-start;
-  gap: 50px;
+  gap: 30px;
   flex-wrap: wrap;
   align-items: flex-start;
   padding: 30px;
   border-radius: 0.75rem;
+  overflow: hidden;
 }
 
 .project-section .project-info h2,
@@ -275,6 +276,9 @@ nav .top-menu {
   display: grid;
   grid-template-columns: repeat(2, auto);
   grid-gap: 20px;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
 }
 
 .project-section .project-files-container {
@@ -297,6 +301,7 @@ nav .top-menu {
   border-radius: 0.75rem;
   gap: 25px;
   padding: 30px;
+  overflow: hidden;
 }
 
 .project-section .project-files-container .category-container > h2 {
@@ -344,6 +349,7 @@ nav .top-menu {
   justify-content: flex-start;
   gap: 10px;
   font-size: 16px;
+  flex-wrap: wrap;
 }
 
 /* ----------------------------- DASHBOARD ----------------------------- */
@@ -404,6 +410,7 @@ nav .top-menu {
   align-items: flex-start;
   flex-wrap: wrap;
   gap: 40px;
+  overflow: hidden;
 }
 
 .create-user-form .create-user-container {
@@ -429,7 +436,7 @@ nav .top-menu {
 .create-user-form .create-user-container .create-user-form-container {
   width: 100%;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: flex-start;
   flex-wrap: wrap;
   gap: 40px;
@@ -495,6 +502,7 @@ nav .top-menu {
   justify-content: flex-start;
   align-items: flex-start;
   gap: 20px;
+  overflow: hidden;
 }
 
 /* SEARCH BAR */
@@ -525,7 +533,7 @@ nav .top-menu {
 }
 
 .edit-user-form .user-results-container .grid-content > * {
-  padding: 10px 0px;
+  padding: 10px;
   border: 1px solid var(--heading-color-trans);
 }
 
@@ -563,6 +571,7 @@ nav .top-menu {
   gap: 20px;
   padding: 20px;
   position: relative;
+  overflow: hidden;
 }
 
 .create-company-form {
@@ -719,4 +728,238 @@ nav .top-menu {
   align-items: flex-start;
   flex-wrap: wrap;
   gap: 20px;
+}
+
+/* ----------------------------- MEDIA QUERIES----------------------------- */
+
+@media screen and (max-width: 1368px) {
+  .projects-section,
+  .project-section {
+    width: 100%;
+    padding: 40px 20px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  /* NAV */
+  nav .logo > h1,
+  nav .logo > div {
+    display: none;
+  }
+
+  nav .top-menu > li:first-child {
+    display: none;
+  }
+
+  /* PROJECTS */
+  .projects-section .projects-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .projects-section .projects-container .grid-headers {
+    display: none;
+  }
+
+  .projects-section .projects-container .grid-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0px;
+    border: 1px solid #e6e6e6;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: left;
+  }
+
+  .projects-section .projects-container .grid-content > * {
+    border: none;
+    padding: 5px;
+  }
+
+  .projects-section .projects-container .grid-content .actions {
+    flex-direction: row;
+    border-right: none;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  /* PROJECT */
+  .project-section .project-info {
+    padding: 10px;
+    flex-direction: column;
+  }
+
+  .project-section .project-info .left-container,
+  .project-section .project-info .right-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  .project-section .project-info .right-container {
+    border-top: 1px solid #e6e6e6;
+    padding-top: 30px;
+  }
+
+  .project-section .project-info .left-container > h2,
+  .project-section .project-info .right-container > h2 {
+    display: none;
+  }
+
+  .project-section .project-files-container .category-container {
+    padding: 5px;
+  }
+
+  /* DASHBOARD */
+  .dashboard-section {
+    padding: 10px;
+  }
+  .dashboard-section nav .functions {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .dashboard-section nav > p {
+    display: none;
+  }
+
+  .dashboard-section .tab-content {
+    padding: 20px 0px;
+  }
+
+  /*  DASHBOARD CREATE USER */
+  .create-user-form {
+    width: 100%;
+  }
+  .create-user-form-container .form-container {
+    width: 100%;
+  }
+
+  .create-user-form-container .form-container .fullname {
+    flex-direction: column;
+  }
+
+  .create-user-form-container .form-container .fullname > input {
+    width: 100%;
+  }
+
+  /* ------ EDIT CONTAINER ------ */
+  .edit-user-form {
+    border-top: 1px solid #e6e6e6;
+    padding-top: 30px;
+  }
+
+  .edit-user-form .search-bar-container {
+    flex-direction: column;
+  }
+
+  .edit-user-form .search-bar-container input {
+    width: 100%;
+  }
+
+  .edit-user-form .user-results-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .edit-user-form .user-results-container .grid-headers {
+    display: none;
+  }
+
+  .edit-user-form .user-results-container .grid-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0px;
+    border: 1px solid #e6e6e6;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: left;
+  }
+
+  .edit-user-form .user-results-container .grid-content > * {
+    border: none;
+    padding: 5px;
+  }
+
+  .edit-user-form .user-results-container .grid-content > h1 {
+    text-align: left;
+  }
+
+  .edit-user-form .user-results-container .grid-content .image-container {
+    justify-content: flex-start;
+  }
+
+  .edit-user-form .user-results-container .grid-content .buttons {
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  /* DASHBOARD CREATE COMPANY */
+  .create-company-form {
+    width: 100%;
+  }
+
+  .create-company-form > input {
+    width: 100%;
+  }
+
+  /* DASHBOARD CREATE PROJECT */
+  .create-project .create-project-form {
+    width: 100%;
+  }
+  .create-project .create-project-form > div {
+    width: 100%;
+  }
+
+  .create-project-form select {
+    width: 100%;
+  }
+
+  .create-project-form input {
+    width: 100%;
+  }
+
+  /* DASHBOARD UPLOAD FILE */
+
+  .upload-file .upload-file-form {
+    width: 100%;
+  }
+
+  .upload-file .upload-file-form > div {
+    width: 100%;
+  }
+
+  .upload-file-form select {
+    width: 100%;
+  }
+
+  .upload-file-form input {
+    width: 100%;
+  }
+
+  .upload-file-form textarea {
+    width: 100%;
+  }
 }
