@@ -33,10 +33,20 @@ function Project() {
       // Get User
       const docRef2 = doc(db, 'users', project.userRef);
       const docSnap2 = await getDoc(docRef2);
-      const user = docSnap2.data();
-      setProjectUser(user);
+      const current_user = docSnap2.data();
+      setProjectUser(current_user);
       // Get Project Files
-      const q = query(collection(db, 'files'), where('projectRef', '==', project.id), orderBy('timestamp', 'desc'));
+      let q = null;
+      if (isAdmin) {
+        q = query(collection(db, 'files'), where('projectRef', '==', project.id), orderBy('timestamp', 'desc'));
+      } else {
+        q = query(
+          collection(db, 'files'),
+          where('projectRef', '==', project.id),
+          where('userRef', '==', user.uid),
+          orderBy('timestamp', 'desc')
+        );
+      }
       const filesSnap = await getDocs(q);
       const files = filesSnap.docs.map((doc) => {
         return {
@@ -46,7 +56,6 @@ function Project() {
       });
       setProjectFiles(files);
     } catch (error) {
-      console.log(error);
       toast.error('Error fetching data');
     }
     setLoading(false);

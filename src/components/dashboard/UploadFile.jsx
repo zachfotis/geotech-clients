@@ -268,7 +268,6 @@ function UploadFile() {
             <select
               className="select select-bordered select-sm"
               id="company-select"
-              defaultValue={'default'}
               value={selectedCompany}
               onChange={(e) => {
                 setSelectedCompany(e.target.value);
@@ -293,7 +292,6 @@ function UploadFile() {
             <select
               className="select select-bordered select-sm"
               id="project-select"
-              defaultValue={selectedProject}
               value={selectedProject}
               onChange={(e) => {
                 setSelectedProject(e.target.value);
@@ -320,7 +318,6 @@ function UploadFile() {
             <select
               className="select select-bordered select-sm"
               id="category-select"
-              defaultValue={'default'}
               value={selectedCategory}
               onChange={(e) => {
                 setSelectedCategory(e.target.value);
@@ -342,7 +339,6 @@ function UploadFile() {
             <select
               className="select select-bordered select-sm"
               id="type-select"
-              defaultValue={'default'}
               value={selectedType}
               onChange={(e) => {
                 setSelectedType(e.target.value);
