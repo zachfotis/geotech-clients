@@ -186,13 +186,6 @@ function CreateCompany() {
           value={createCompanyForm.businessType}
           onChange={(e) => setCreateCompanyForm({ ...createCompanyForm, businessType: e.target.value })}
         />
-        <input
-          type="text"
-          placeholder="Phone Number"
-          className="input input-bordered input-ghost"
-          value={createCompanyForm.phone}
-          onChange={(e) => setCreateCompanyForm({ ...createCompanyForm, phone: e.target.value })}
-        />
         <div className="address-container">
           <input
             type="text"
@@ -236,6 +229,13 @@ function CreateCompany() {
           className="input input-bordered input-ghost"
           value={createCompanyForm.country}
           onChange={(e) => setCreateCompanyForm({ ...createCompanyForm, country: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="Phone Number"
+          className="input input-bordered input-ghost"
+          value={createCompanyForm.phone}
+          onChange={(e) => setCreateCompanyForm({ ...createCompanyForm, phone: e.target.value })}
         />
         <input
           type="email"

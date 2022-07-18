@@ -529,7 +529,8 @@ nav .top-menu {
   flex: auto;
 }
 
-.create-user-form-container .form-container .is-admin {
+.create-user-form-container .form-container .is-admin,
+.create-user-form-container .form-container .notify {
   width: 100%;
   display: flex;
   justify-content: flex-start;

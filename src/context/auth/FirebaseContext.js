@@ -12,6 +12,7 @@ export const FirebaseProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(user?.accountType === 'admin' ? true : false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
   const isMounted = useRef(true);
 
@@ -48,6 +49,7 @@ export const FirebaseProvider = ({ children }) => {
   // Update if user is admin
   useEffect(() => {
     setIsAdmin(user?.accountType === 'admin' ? true : false);
+    setIsSuperAdmin(user?.uid === process.env.REACT_APP_SUPER_ADMIN ? true : false);
   }, [user]);
 
   return (
@@ -57,6 +59,7 @@ export const FirebaseProvider = ({ children }) => {
         loading,
         loggedIn,
         isAdmin,
+        isSuperAdmin,
         setLoading,
         setLoggedIn,
       }}

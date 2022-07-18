@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { getAuth, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from 'firebase/auth';
 import { setDoc, doc, getDocs, collection, serverTimestamp, updateDoc, deleteDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Avatar from 'react-avatar';
 
 function CreateUser() {
-  const { setLoading } = useContext(FirebaseContext);
+  const { setLoading, isSuperAdmin } = useContext(FirebaseContext);
   const [formData, setFormData] = useState({
     firstname: '',
     lastname: '',
@@ -26,6 +26,50 @@ function CreateUser() {
     fetchedUsers: [],
     matchingUsers: [],
   });
+  const [notifyUser, setNotifyUser] = useState(false);
+  const [targetEmail, setTargetEmail] = useState('');
+
+  // Notify User
+  useEffect(() => {
+    if (!notifyUser || !formData?.email) {
+      setTargetEmail('');
+      return;
+    }
+
+    setTargetEmail(formData.email);
+  }, [notifyUser, formData]);
+
+  // Send Email Fetch Function
+  const sendEmail = async (type) => {
+    try {
+      const options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          to: targetEmail,
+          firstname: formData.firstname,
+          lastname: formData.lastname,
+          email: formData.email,
+          password: formData.password,
+          accountType: formData.accountType,
+          emailType: type,
+        }),
+      };
+
+      const response = await fetch('https://geotech-server.herokuapp.com/api/v1/sendEmail', options);
+      const data = await response.json();
+
+      if (data?.info?.messageId) {
+        toast.success('Email sent successfully');
+      } else {
+        toast.error('Error sending email');
+      }
+    } catch (error) {
+      toast.error('Error sending email');
+    }
+  };
 
   // Store Image to Firebase Storage -- PROMISE
   const storeImage = async (image) => {
@@ -71,6 +115,12 @@ function CreateUser() {
   // Create new User
   const onCreate = async (e) => {
     e.preventDefault();
+
+    if (notifyUser && !targetEmail) {
+      toast.error('You cannot notify a non-connected user');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -102,7 +152,14 @@ function CreateUser() {
       delete userDataCopy.password;
 
       await setDoc(doc(db, 'users', newUser.uid), userDataCopy);
+
+      // Send Email
+      if (notifyUser && targetEmail) {
+        sendEmail('create-user');
+      }
+
       toast.success('Account created successfully');
+
       auth.signOut();
 
       // clear state
@@ -234,9 +291,13 @@ function CreateUser() {
     setEditingUser({});
   };
 
-  // TODO: DELETE AFTER DEVELOPMENT
   // Delete button in search resulted user
   const onDelete = async (user) => {
+    if (!isSuperAdmin) {
+      toast.error('You are not authorized to delete users');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -502,6 +563,23 @@ function CreateUser() {
                 </label>
               </div>
 
+              {!isEditing && (
+                <div className="notify">
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-sm checkbox-accent"
+                    id="notify-user"
+                    checked={notifyUser}
+                    onChange={(e) => {
+                      setNotifyUser(e.target.checked);
+                    }}
+                  />
+                  <label htmlFor="notify-user" className="label cursor-pointer">
+                    Notify user {notifyUser && targetEmail && `(${targetEmail})`}
+                  </label>
+                </div>
+              )}
+
               <input
                 type="submit"
                 value={isEditing ? 'Update User' : 'Create User'}
@@ -581,15 +659,17 @@ function CreateUser() {
                         Edit
                       </button>
                     )}
-                    <button
-                      type="button"
-                      className="btn btn-xs btn-error btn-outline"
-                      onClick={() => {
-                        onDelete(user);
-                      }}
-                    >
-                      Delete
-                    </button>
+                    {isSuperAdmin && (
+                      <button
+                        type="button"
+                        className="btn btn-xs btn-error btn-outline"
+                        onClick={() => {
+                          onDelete(user);
+                        }}
+                      >
+                        Delete
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}

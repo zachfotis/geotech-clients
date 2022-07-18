@@ -149,7 +149,7 @@ function UploadFile() {
   }, [notifyUser, selectedProject, selectedCompany]); // eslint-disable-line
 
   // Send Email Fetch Function
-  const sendEmail = async () => {
+  const sendEmail = async (type) => {
     try {
       const options = {
         method: 'POST',
@@ -163,6 +163,7 @@ function UploadFile() {
           category: selectedCategory,
           type: selectedType,
           filename: selectedFile.name,
+          emailType: type,
         }),
       };
 
@@ -231,7 +232,7 @@ function UploadFile() {
 
       // Send Email
       if (notifyUser && targetUser) {
-        sendEmail();
+        sendEmail('upload-file');
       }
 
       toast.success('File uploaded successfully');
@@ -416,17 +417,18 @@ function UploadFile() {
             }}
           />
         </div>
+        {/* Notify User */}
         <div className="container-5">
           <input
             type="checkbox"
             className="checkbox checkbox-sm checkbox-accent"
-            id="accountType"
+            id="notify-user"
             checked={notifyUser}
             onChange={(e) => {
               setNotifyUser(e.target.checked);
             }}
           />
-          <label htmlFor="accountType" className="label cursor-pointer">
+          <label htmlFor="notify-user" className="label cursor-pointer">
             Notify user when upload {notifyUser && targetUser && `(${targetUser.email})`}
           </label>
         </div>
