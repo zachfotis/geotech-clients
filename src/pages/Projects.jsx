@@ -3,11 +3,13 @@ import { Link, Navigate } from 'react-router-dom';
 import { getDocs, orderBy, deleteDoc, collection, query, where } from 'firebase/firestore';
 import { getStorage, ref, deleteObject } from 'firebase/storage';
 import FirebaseContext from '../context/auth/FirebaseContext';
+import ModalContext from '../context/modal/ModalContext';
 import { db } from '../firebase.config';
 import { toast } from 'react-toastify';
 
 function Projects() {
   const { user, loggedIn, loading, setLoading, isAdmin } = useContext(FirebaseContext);
+  const { openModal, modalId } = useContext(ModalContext);
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [search, setSearch] = useState('');
@@ -62,8 +64,15 @@ function Projects() {
     setSearch(e.target.elements['search-bar'].value);
   };
 
-  // TODO: Add modal to delete project
   const onDelete = async (id) => {
+    if (!modalId) {
+      openModal('delete', 'Are you sure you want to delete this project?', id);
+      return;
+    } else if (modalId === id) {
+      alert('Deleting project');
+      return;
+    }
+
     setLoading(true);
     try {
       // Delete Project
