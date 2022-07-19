@@ -3,16 +3,26 @@ import { Link, Navigate } from 'react-router-dom';
 import { getDocs, orderBy, deleteDoc, collection, query, where } from 'firebase/firestore';
 import { getStorage, ref, deleteObject } from 'firebase/storage';
 import FirebaseContext from '../context/auth/FirebaseContext';
-import ModalContext from '../context/modal/ModalContext';
 import { db } from '../firebase.config';
 import { toast } from 'react-toastify';
+import Modal from '../components/layout/Modal';
 
 function Projects() {
   const { user, loggedIn, loading, setLoading, isAdmin } = useContext(FirebaseContext);
-  const { openModal, modalId } = useContext(ModalContext);
   const [projects, setProjects] = useState([]);
   const [filteredProjects, setFilteredProjects] = useState([]);
   const [search, setSearch] = useState('');
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalId, setModalId] = useState('');
+
+  function openModal(id) {
+    setModalIsOpen(true);
+    setModalId(id);
+  }
+
+  function closeModal() {
+    setModalIsOpen(false);
+  }
 
   const getProjects = async () => {
     setLoading(true);
@@ -65,14 +75,6 @@ function Projects() {
   };
 
   const onDelete = async (id) => {
-    if (!modalId) {
-      openModal('delete', 'Are you sure you want to delete this project?', id);
-      return;
-    } else if (modalId === id) {
-      alert('Deleting project');
-      return;
-    }
-
     setLoading(true);
     try {
       // Delete Project
@@ -98,6 +100,8 @@ function Projects() {
       toast.error('Error deleting project');
     }
     setLoading(false);
+    setModalId('');
+    closeModal();
   };
 
   if (!loggedIn || !user) {
@@ -106,6 +110,13 @@ function Projects() {
 
   return (
     <section className="projects-section">
+      <Modal
+        modalType="Delete Project"
+        modalContent="Are you sure you want to delete this project?"
+        confirmFn={() => onDelete(modalId)}
+        modalIsOpen={modalIsOpen}
+        closeModal={closeModal}
+      />
       <h1>{`Welcome ${user.firstname}`}</h1>
       <form onSubmit={onSubmit}>
         <input
@@ -156,7 +167,7 @@ function Projects() {
                         <div
                           className="btn btn-outline btn-error btn-xs w-28"
                           onClick={() => {
-                            onDelete(project.id);
+                            openModal(project.id);
                           }}
                         >
                           Delete
@@ -194,7 +205,7 @@ function Projects() {
                         <div
                           className="btn btn-outline btn-error btn-xs w-28"
                           onClick={() => {
-                            onDelete(project.id);
+                            openModal(project.id);
                           }}
                         >
                           Delete

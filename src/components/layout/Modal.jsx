@@ -1,5 +1,3 @@
-import { useContext } from 'react';
-import ModalContext from '../../context/modal/ModalContext';
 import ReactModal from 'react-modal';
 
 const customStyles = {
@@ -18,9 +16,7 @@ const customStyles = {
 
 ReactModal.setAppElement(document.getElementById('root'));
 
-function Modal() {
-  let { modalIsOpen, closeModal, modalContent, modalType, setStatus } = useContext(ModalContext);
-
+function Modal({ modalType, modalContent, confirmFn, modalIsOpen, closeModal }) {
   return (
     <ReactModal isOpen={modalIsOpen} onRequestClose={closeModal} style={customStyles} contentLabel={modalType}>
       <div className="modal-content">
@@ -28,20 +24,10 @@ function Modal() {
         <div className="main-content">
           <h2 className="modal-text">{modalContent}</h2>
           <div className="buttons">
-            <button
-              className="btn btn-error btn-sm"
-              onClick={() => {
-                setStatus('confirm');
-              }}
-            >
+            <button className="btn btn-error btn-sm" onClick={confirmFn}>
               Confirm
             </button>
-            <button
-              className="btn btn-ghost btn-sm"
-              onClick={() => {
-                setStatus('cancel');
-              }}
-            >
+            <button className="btn btn-ghost btn-sm" onClick={closeModal}>
               Cancel
             </button>
           </div>

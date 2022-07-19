@@ -19,31 +19,31 @@ function CreateProject() {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const getUsers = async () => {
-      setLoading(true);
-      try {
-        // Get Users
-        let q = query(collection(db, 'users'), orderBy('lastname', 'asc'));
-        const userSnap = await getDocs(q);
-        const users = userSnap.docs.map((doc) => doc.data());
-        setUsers(users);
-        // Get Companies
-        q = query(collection(db, 'companies'), orderBy('title', 'asc'));
-        const companiesSnap = await getDocs(q);
-        const companies = companiesSnap.docs.map((doc) => doc.data());
-        setCompanies(companies);
-        // Get Current Project ID
-        const projectIDSnap = await getDoc(doc(db, 'utilities', 'current-project-id'));
-        const projectID = projectIDSnap.data().id + 1;
-        setProjectForm({ ...projectForm, id: projectID });
-      } catch (error) {
-        console.log(error);
-        toast.error('Error fetching users');
-      }
-      setLoading(false);
-    };
+  const getUsers = async () => {
+    setLoading(true);
+    try {
+      // Get Users
+      let q = query(collection(db, 'users'), orderBy('lastname', 'asc'));
+      const userSnap = await getDocs(q);
+      const users = userSnap.docs.map((doc) => doc.data());
+      setUsers(users);
+      // Get Companies
+      q = query(collection(db, 'companies'), orderBy('title', 'asc'));
+      const companiesSnap = await getDocs(q);
+      const companies = companiesSnap.docs.map((doc) => doc.data());
+      setCompanies(companies);
+      // Get Current Project ID
+      const projectIDSnap = await getDoc(doc(db, 'utilities', 'current-project-id'));
+      const projectID = projectIDSnap.data().id + 1;
+      setProjectForm({ ...projectForm, id: projectID });
+    } catch (error) {
+      console.log(error);
+      toast.error('Error fetching users');
+    }
+    setLoading(false);
+  };
 
+  useEffect(() => {
     getUsers();
   }, []);
 

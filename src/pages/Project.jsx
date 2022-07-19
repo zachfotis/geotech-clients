@@ -5,6 +5,7 @@ import { getStorage, ref, deleteObject } from 'firebase/storage';
 import FirebaseContext from '../context/auth/FirebaseContext';
 import { db } from '../firebase.config';
 import { toast } from 'react-toastify';
+import Modal from '../components/layout/Modal';
 
 function Project() {
   const { user, isAdmin, loggedIn, setLoading, isLoading } = useContext(FirebaseContext);
@@ -14,6 +15,17 @@ function Project() {
   const [projectFiles, setProjectFiles] = useState(null);
   const [project, setProject] = useState(state);
   const [categories, setCategories] = useState(null);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalFile, setModalFile] = useState(null);
+
+  function openModal(file) {
+    setModalIsOpen(true);
+    setModalFile(file);
+  }
+
+  function closeModal() {
+    setModalIsOpen(false);
+  }
 
   const getProjectData = async () => {
     setLoading(true);
@@ -102,8 +114,6 @@ function Project() {
   }, [projectFiles]);
 
   // On File Delete
-  // TODO: Add modal to delete file
-
   const onFileDelete = async (file) => {
     setLoading(true);
     // Delete file from storage
@@ -116,6 +126,8 @@ function Project() {
     await deleteDoc(fileRef);
 
     toast.success('File deleted');
+    setModalFile(null);
+    closeModal();
     setLoading(false);
     getProjectData();
   };
@@ -127,6 +139,13 @@ function Project() {
   if (!isLoading)
     return (
       <section className="project-section">
+        <Modal
+          modalType="Delete File"
+          modalContent="Are you sure you want to delete this file?"
+          confirmFn={() => onFileDelete(modalFile)}
+          modalIsOpen={modalIsOpen}
+          closeModal={closeModal}
+        />
         <h1>
           {project.title} {project.isNew && <span className="badge badge-accent badge-md text-white">New</span>}
         </h1>
@@ -200,7 +219,7 @@ function Project() {
                             <button
                               className="btn btn-outline btn-xs btn-error"
                               onClick={() => {
-                                onFileDelete(file);
+                                openModal(file);
                               }}
                             >
                               Delete

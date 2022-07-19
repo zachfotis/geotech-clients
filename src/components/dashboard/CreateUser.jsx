@@ -371,17 +371,15 @@ function CreateUser() {
                     className="rounded-xl"
                   />
                 ) : (
-                  <>
-                    <img
-                      src={
-                        typeof editingUser.profileImage === 'string'
-                          ? editingUser.profileImage
-                          : URL.createObjectURL(editingUser.profileImage)
-                      }
-                      alt="avatar"
-                      className="rounded-xl"
-                    />
-                  </>
+                  <img
+                    src={
+                      typeof editingUser.profileImage === 'string'
+                        ? editingUser.profileImage
+                        : URL.createObjectURL(editingUser.profileImage)
+                    }
+                    alt="avatar"
+                    className="rounded-xl"
+                  />
                 )
               ) : formData.profileImage === '' ? (
                 <Avatar

@@ -220,6 +220,96 @@ nav .top-menu {
   transition: all 0.3s ease-in-out;
 }
 
+/* ----------------------------- PROFILE ----------------------------- */
+
+.profile-section {
+  width: 80%;
+  flex: auto;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+
+.profile-section > h1 {
+  font-size: 32px;
+  font-weight: 400;
+  margin-top: 50px;
+  text-transform: uppercase;
+  color: var(--heading-color);
+}
+
+.profile-section > p {
+  font-size: 1.2rem;
+  font-weight: 400;
+  margin-top: 10px;
+  color: var(--heading-color);
+  font-style: italic;
+}
+
+.profile-section .profile-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 40px;
+  padding: 20px 0;
+}
+
+.profile-section .profile-container .bottom-container {
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 80px;
+}
+
+.profile-section .profile-container .bottom-container .form-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.profile-section .profile-container .bottom-container .form-container > input {
+  width: 100%;
+  max-width: 500px;
+  transition: all 0.3s ease-in-out;
+}
+
+.profile-section .profile-container .top-container .checkbox-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.profile-section .profile-container .avatar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.profile-section .profile-container .avatar-container img {
+  max-width: 140px;
+}
+
+.profile-section .profile-container .avatar-container label {
+  width: max-content;
+}
+
+.profile-section .profile-container .avatar-container #user-image-upload {
+  display: none;
+}
+
 /* ----------------------------- PROJECTS ----------------------------- */
 
 .projects-section {
