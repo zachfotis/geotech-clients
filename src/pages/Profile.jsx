@@ -150,15 +150,17 @@ function Profile() {
         const file = e.target.files[0];
         const imgUrl = await storeImage(file);
 
+        // Delete old avatar
+        if (user.profileImage) {
+          const storage = getStorage();
+          let avatarRef = ref(storage, user.profileImage);
+          await deleteObject(avatarRef);
+        }
+
         // Update Firestore
         await updateDoc(doc(db, 'users', user.uid), {
           profileImage: imgUrl,
         });
-
-        // Delete old avatar
-        const storage = getStorage();
-        let avatarRef = ref(storage, user.profileImage);
-        await deleteObject(avatarRef);
 
         setUpdateProfileRequest(true);
         toast.success('Avatar updated');
