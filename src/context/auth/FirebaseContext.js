@@ -13,6 +13,7 @@ export const FirebaseProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(user?.accountType === 'admin' ? true : false);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [updateProfileRequest, setUpdateProfileRequest] = useState(false);
 
   const isMounted = useRef(true);
 
@@ -41,10 +42,12 @@ export const FirebaseProvider = ({ children }) => {
       });
     }
 
+    setUpdateProfileRequest(false);
+
     return () => {
       isMounted.current = false;
     };
-  }, [isMounted]);
+  }, [isMounted, updateProfileRequest]);
 
   // Update if user is admin
   useEffect(() => {
@@ -62,6 +65,7 @@ export const FirebaseProvider = ({ children }) => {
         isSuperAdmin,
         setLoading,
         setLoggedIn,
+        setUpdateProfileRequest,
       }}
     >
       {children}
