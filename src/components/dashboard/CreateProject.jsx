@@ -60,6 +60,8 @@ function CreateProject() {
     try {
       const projectFormCopy = {
         ...projectForm,
+        // The actual upload date
+        timestamp2: serverTimestamp(),
       };
 
       await addDoc(collection(db, 'projects'), projectFormCopy);
