@@ -29,9 +29,9 @@ function Projects() {
     try {
       let q;
       if (isAdmin) {
-        q = query(collection(db, 'projects'), orderBy('id', 'desc'));
+        q = query(collection(db, 'projects'), orderBy('date', 'desc'));
       } else {
-        q = query(collection(db, 'projects'), where('userRef', '==', user.uid), orderBy('id', 'desc'));
+        q = query(collection(db, 'projects'), where('userRef', '==', user.uid), orderBy('date', 'desc'));
       }
       const querySnapshot = await getDocs(q);
       const projects = querySnapshot.docs.map((doc) => doc.data());
@@ -153,7 +153,7 @@ function Projects() {
                   <p>{project.id}</p>
                   <p>{project.title}</p>
                   <p>{project.companyName}</p>
-                  <p>{new Date(project.timestamp.seconds * 1000).toLocaleDateString()}</p>
+                  <p>{new Date(project.date).toLocaleDateString()}</p>
                   <div className="actions">
                     {isAdmin ? (
                       <>
