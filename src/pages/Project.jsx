@@ -31,7 +31,7 @@ function Project() {
     setLoading(true);
     //  Create Project Date and check if it new
     const currentDate = new Date();
-    const projectDate = new Date(project.timestamp);
+    const projectDate = new Date(project.date);
     const daysAgo = currentDate.getDate() - projectDate.getDate();
     const isNew = daysAgo <= 3;
     setProject({ ...project, date: projectDate.toLocaleDateString(), isNew });

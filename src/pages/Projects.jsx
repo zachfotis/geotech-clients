@@ -191,7 +191,7 @@ function Projects() {
                   <p>{project.id}</p>
                   <p>{project.title}</p>
                   <p>{project.companyName}</p>
-                  <p>{new Date(project.timestamp).toLocaleDateString()}</p>
+                  <p>{new Date(project.date).toLocaleDateString()}</p>
                   <div className="actions">
                     {isAdmin ? (
                       <>

@@ -15,7 +15,7 @@ function CreateProject() {
     companyRef: '',
     userRef: '',
     companyName: '',
-    timestamp: new Date().getTime(),
+    date: new Date().getTime(),
   });
 
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ function CreateProject() {
       const projectFormCopy = {
         ...projectForm,
         // The actual upload date
-        timestamp2: serverTimestamp(),
+        timestamp: serverTimestamp(),
       };
 
       await addDoc(collection(db, 'projects'), projectFormCopy);
@@ -70,7 +70,6 @@ function CreateProject() {
       toast.success('Project created!');
       navigate('/projects');
     } catch (error) {
-      console.log(error);
       toast.error('Error creating project');
     }
     setLoading(false);
@@ -83,7 +82,7 @@ function CreateProject() {
       companyRef: '',
       userRef: '',
       companyName: '',
-      timestamp: new Date().getTime(),
+      date: new Date().getTime(),
     });
   };
 
@@ -185,21 +184,21 @@ function CreateProject() {
             placeholder="Project Date"
             id="project-date"
             className="input input-bordered input-ghost"
-            value={new Date(projectForm.timestamp).toISOString().split('T')[0]}
+            value={new Date(projectForm.date).toISOString().split('T')[0]}
             onChange={(e) => {
               try {
-                const date = e.target.value;
-                const timestamp = new Date(date).getTime();
+                let date = e.target.value;
+                date = new Date(date).getTime();
                 // Check for future date
-                if (timestamp > new Date().getTime()) {
+                if (date > new Date().getTime()) {
                   throw new Error('Future dates are not allowed');
                 }
                 // Checker checks the input is a valid date
-                const checker = new Date(timestamp).toISOString().split('T')[0];
-                setProjectForm({ ...projectForm, timestamp });
+                const checker = new Date(date).toISOString().split('T')[0];
+                setProjectForm({ ...projectForm, date });
               } catch (error) {
                 toast.error(error.message);
-                setProjectForm({ ...projectForm, timestamp: new Date().getTime() });
+                setProjectForm({ ...projectForm, date: new Date().getTime() });
               }
             }}
           />
