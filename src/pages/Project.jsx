@@ -160,7 +160,7 @@ function Project() {
               </span>
               <h2>Contact Email: </h2>
               <a href={`mailto:${projectUser?.email}`}>{projectUser?.email}</a>
-              <h2>Created At:</h2>
+              <h2>Project Date:</h2>
               <span>{project.date}</span>
             </div>
             <div className="right-container ">
