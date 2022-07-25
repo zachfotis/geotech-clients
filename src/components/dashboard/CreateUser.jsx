@@ -475,8 +475,6 @@ function CreateUser() {
                         setFormData({
                           ...formData,
                           lastname: e.target.value,
-                          password:
-                            e.target.value !== '' ? (e.target.value + new Date().getFullYear()).toLowerCase() : '',
                         })
                       }
                     />
@@ -514,7 +512,18 @@ function CreateUser() {
                     placeholder="Email"
                     className="input input-bordered "
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        email: e.target.value,
+                        password:
+                          e.target.value !== ''
+                            ? (
+                                e.target.value.split('@')[0].replace(/[^a-zA-Z0-9 ]/g, '') + new Date().getFullYear()
+                              ).toLowerCase()
+                            : '',
+                      })
+                    }
                   />
                   <input
                     required={true}
