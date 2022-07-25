@@ -15,6 +15,7 @@ function CreateProject() {
     companyRef: '',
     userRef: '',
     companyName: '',
+    timestamp: new Date().getTime(),
   });
 
   const navigate = useNavigate();
@@ -59,7 +60,6 @@ function CreateProject() {
     try {
       const projectFormCopy = {
         ...projectForm,
-        timestamp: serverTimestamp(),
       };
 
       await addDoc(collection(db, 'projects'), projectFormCopy);
@@ -81,6 +81,7 @@ function CreateProject() {
       companyRef: '',
       userRef: '',
       companyName: '',
+      timestamp: new Date().getTime(),
     });
   };
 
@@ -140,6 +141,7 @@ function CreateProject() {
             ))}
           </select>
         </div>
+        {/* PROJECT ID */}
         <div className="project-id">
           <label className="label" htmlFor="project-id">
             <span className="label-text">Project Id</span>
@@ -155,6 +157,7 @@ function CreateProject() {
             onChange={(e) => setProjectForm({ ...projectForm, id: e.target.value })}
           />
         </div>
+        {/* PROJECT TITLE */}
         <div className="project-title">
           <label className="label" htmlFor="project-title">
             <span className="label-text">Project Title</span>
@@ -167,6 +170,25 @@ function CreateProject() {
             className="input input-bordered input-ghost"
             value={projectForm.title}
             onChange={(e) => setProjectForm({ ...projectForm, title: e.target.value })}
+          />
+        </div>
+        {/* PROJECT DATE */}
+        <div className="project-date">
+          <label className="label" htmlFor="project-date">
+            <span className="label-text">Project Date</span>
+          </label>
+          <input
+            type="date"
+            required={true}
+            placeholder="Project Date"
+            id="project-date"
+            className="input input-bordered input-ghost"
+            value={new Date(projectForm.timestamp).toISOString().split('T')[0]}
+            onChange={(e) => {
+              const date = e.target.value;
+              const timestamp = new Date(date).getTime();
+              setProjectForm({ ...projectForm, timestamp });
+            }}
           />
         </div>
         <input type="submit" className="btn btn-outline btn-success mt-8" value="Create Project" />

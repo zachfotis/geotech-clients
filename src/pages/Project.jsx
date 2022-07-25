@@ -31,10 +31,10 @@ function Project() {
     setLoading(true);
     //  Create Project Date and check if it new
     const currentDate = new Date();
-    const projectDate = new Date(project.timestamp.seconds * 1000);
+    const projectDate = new Date(project.timestamp);
     const daysAgo = currentDate.getDate() - projectDate.getDate();
     const isNew = daysAgo <= 3;
-    setProject({ ...project, date: projectDate.toLocaleString(), isNew });
+    setProject({ ...project, date: projectDate.toLocaleDateString(), isNew });
 
     try {
       // Get Company
