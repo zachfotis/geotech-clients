@@ -196,34 +196,53 @@ function Project() {
               </h1>
               {Object.keys(categories[category]).map((type) => (
                 <div key={`${category}-${type}`} className="category-container shadow-md">
-                  <h2>{type.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())}s</h2>
+                  <h2>
+                    {type.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase())}
+                    {categories[category][type].length > 1 && <span>s</span>}
+                  </h2>
                   {categories[category][type].map((file) => (
                     <div key={file.fileName} className="category-files-container">
-                      <img src={file.fileTypeIcon} alt="file type" />
+                      <a href={file.fileURL} download={file.fileName} target="_blank" rel="noreferrer">
+                        <img src={file.fileTypeIcon} alt="file type" />
+                      </a>
                       <div className="file-download">
-                        <h2>{file.fileName}</h2>
+                        <h2>
+                          {file.fileName} {file.description ? <i> ( {file.description} )</i> : ''}
+                        </h2>
                         <h2 className="uploaded">
                           Uploaded: {new Date(file.timestamp.seconds * 1000).toLocaleString()}
                         </h2>
                         <div className="buttons">
-                          <a
-                            className="btn btn-outline btn-xs btn-success"
-                            href={file.fileURL}
-                            download={file.fileName}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            Download
-                          </a>
-                          {isAdmin && (
-                            <button
-                              className="btn btn-outline btn-xs btn-error"
-                              onClick={() => {
-                                openModal(file);
-                              }}
+                          {isAdmin ? (
+                            <>
+                              <a
+                                className="btn btn-outline btn-xs btn-success"
+                                href={file.fileURL}
+                                download={file.fileName}
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                Download
+                              </a>
+                              <button
+                                className="btn btn-outline btn-xs btn-error"
+                                onClick={() => {
+                                  openModal(file);
+                                }}
+                              >
+                                Delete
+                              </button>
+                            </>
+                          ) : (
+                            <a
+                              className="btn btn-outline btn-sm btn-success"
+                              href={file.fileURL}
+                              download={file.fileName}
+                              target="_blank"
+                              rel="noreferrer"
                             >
-                              Delete
-                            </button>
+                              Download
+                            </a>
                           )}
                         </div>
                       </div>
