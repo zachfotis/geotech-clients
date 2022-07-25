@@ -24,14 +24,14 @@ function Projects() {
     setModalIsOpen(false);
   }
 
-  const getProjects = async () => {
+  const getProjects = async (orderBySelection = 'date', type = 'desc') => {
     setLoading(true);
     try {
       let q;
       if (isAdmin) {
-        q = query(collection(db, 'projects'), orderBy('date', 'desc'));
+        q = query(collection(db, 'projects'), orderBy(orderBySelection, type));
       } else {
-        q = query(collection(db, 'projects'), where('userRef', '==', user.uid), orderBy('date', 'desc'));
+        q = query(collection(db, 'projects'), where('userRef', '==', user.uid), orderBy(orderBySelection, type));
       }
       const querySnapshot = await getDocs(q);
       const projects = querySnapshot.docs.map((doc) => doc.data());
@@ -141,10 +141,38 @@ function Projects() {
       ) : (
         <div className="projects-container">
           <div className="grid-headers contents text-md uppercase font-semibold text-center">
-            <h1 className="rounded-tl-xl">Project ID</h1>
-            <h1>Project Name</h1>
-            <h1>Company</h1>
-            <h1>Date</h1>
+            <h1
+              className="rounded-tl-xl cursor-pointer"
+              onClick={() => {
+                getProjects('id');
+              }}
+            >
+              Project ID
+            </h1>
+            <h1
+              className="cursor-pointer"
+              onClick={() => {
+                getProjects('title', 'asc');
+              }}
+            >
+              Project Name
+            </h1>
+            <h1
+              className="cursor-pointer"
+              onClick={() => {
+                getProjects('companyName', 'asc');
+              }}
+            >
+              Company
+            </h1>
+            <h1
+              className="cursor-pointer"
+              onClick={() => {
+                getProjects('date');
+              }}
+            >
+              Date
+            </h1>
             <h1 className="rounded-tr-xl">Actions</h1>
           </div>
           {filteredProjects.length > 0 || search.length > 0
