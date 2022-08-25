@@ -96,7 +96,7 @@ function Project() {
       // Add file icon to each file
       let fileTypeIcon = null;
       try {
-        fileTypeIcon = require(`../assets/file-types/${file.docProp.fileType}.png`);
+        fileTypeIcon = require(`../assets/file-types/${file.docProp.fileType.toLowerCase()}.png`);
       } catch (error) {
         fileTypeIcon = require('../assets/file-types/unknown.png');
       }
