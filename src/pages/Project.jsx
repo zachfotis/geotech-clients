@@ -32,8 +32,9 @@ function Project() {
     //  Create Project Date and check if it new
     const currentDate = new Date();
     const projectDate = new Date(project.date);
-    const daysAgo = currentDate.getDate() - projectDate.getDate();
-    const isNew = daysAgo <= 3;
+    const daysAgo = currentDate - projectDate;
+    const days = Math.round(daysAgo / (1000 * 60 * 60 * 24));
+    const isNew = days <= 3;
     setProject({ ...project, date: projectDate.toLocaleDateString(), isNew });
 
     try {
