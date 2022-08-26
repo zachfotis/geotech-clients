@@ -101,7 +101,7 @@ function Profile() {
     setLoading(false);
   };
 
-  // Store Image to Firebase Storage -- PROMISE
+  // Store Image to Firebase Storage | PROMISE
   const storeImage = async (image) => {
     return new Promise((resolve, reject) => {
       const storage = getStorage();
