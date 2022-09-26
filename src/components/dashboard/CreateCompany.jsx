@@ -29,7 +29,7 @@ function CreateCompany() {
     const fetchVatFromGeotechServer = async () => {
       setIsFetching(true);
       try {
-        const response = await fetch(`https://geotech-server.herokuapp.com/api/v1/getVat/${vat}`);
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/v1/getVat/${vat}`);
         // const response = await fetch(`http://localhost:5000/api/v1/getVat/${vat}`);
         if (response.status !== 200) {
           throw new Error('Something went wrong');

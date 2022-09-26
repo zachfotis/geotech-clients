@@ -42,10 +42,7 @@ function Navbar() {
                   ) : (
                     <Avatar
                       color={stringToColour(`${user?.firstname} ${user?.lastname}`)}
-                      fgColor={invertColor(
-                        stringToColour(`${user?.firstname} ${user?.lastname}`),
-                        true
-                      )}
+                      fgColor={invertColor(stringToColour(`${user?.firstname} ${user?.lastname}`), true)}
                       name={`${user?.firstname} ${user?.lastname}`}
                       size="40"
                       round="true"

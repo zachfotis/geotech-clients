@@ -167,7 +167,7 @@ function UploadFile() {
         }),
       };
 
-      const response = await fetch('https://geotech-server.herokuapp.com/api/v1/sendEmail', options);
+      const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/v1/sendEmail`, options);
       const data = await response.json();
 
       if (data?.info?.messageId) {

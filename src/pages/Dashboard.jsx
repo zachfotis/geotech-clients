@@ -17,7 +17,7 @@ function Dashboard() {
     const getGeotechServerStatus = async () => {
       setIsServerConnecting(true);
       try {
-        const response = await fetch('https://geotech-server.herokuapp.com/api/v1/status');
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/api/v1/status`);
         const data = await response.json();
         if (data.status) {
           setIsServerConnected(true);
